@@ -11,8 +11,7 @@ RUN yarn build
 # Production Stage: Nginx #
 FROM nginx:alpine
 
-# Create a non-root user and switch to it
-
+USER nginx
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
