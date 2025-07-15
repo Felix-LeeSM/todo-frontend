@@ -1,12 +1,5 @@
+import { CheckCircle, Circle, Clock, GripVertical, PlayCircle, X } from "lucide-react";
 import type { TodoInterface } from "../type/Todo.interface";
-import {
-  CheckCircle,
-  Circle,
-  Clock,
-  PlayCircle,
-  GripVertical,
-  X,
-} from "lucide-react";
 
 interface TodoCardProps {
   todo: TodoInterface;
@@ -29,11 +22,7 @@ export default function TodoCard({ todo, onDelete }: TodoCardProps) {
   };
 
   return (
-    <div
-      className={`p-4 rounded-lg border ${
-        statusColors[todo.status]
-      } flex items-center`}
-    >
+    <div className={`p-4 rounded-lg border ${statusColors[todo.status]} flex items-center`}>
       <div className="cursor-move">
         <GripVertical className="w-5 h-5 text-gray-400" />
       </div>
@@ -42,16 +31,10 @@ export default function TodoCard({ todo, onDelete }: TodoCardProps) {
         <p className="text-sm text-gray-600 mt-1">{todo.description}</p>
       </div>
       <div className="flex flex-col self-stretch">
-        <button
-          type="button"
-          className="self-start"
-          onClick={() => onDelete(todo)}
-        >
+        <button type="button" className="self-start" onClick={() => onDelete(todo)}>
           <X className="w-5 h-5" />
         </button>
-        <div className="flex-1 flex items-center justify-center">
-          {statusIcons[todo.status]}
-        </div>
+        <div className="flex-1 flex items-center justify-center">{statusIcons[todo.status]}</div>
       </div>
     </div>
   );

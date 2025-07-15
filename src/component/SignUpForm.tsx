@@ -1,9 +1,9 @@
-import { authApi } from "../services/authApi";
+import { IdCard, LoaderCircle, Lock, User } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, IdCard, LoaderCircle } from "lucide-react";
-import { LoadingButton } from "./LoadingButton";
+import { authApi } from "../services/authApi";
 import { handleApiError } from "../util/handleApiError";
+import { LoadingButton } from "./LoadingButton";
 
 export function SignUpForm() {
   const [username, setUsername] = useState("");

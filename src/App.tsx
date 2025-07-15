@@ -1,27 +1,21 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Flip, ToastContainer } from "react-toastify";
 import { AuthProvider } from "./context/auth/AuthProvider";
-import { SignIn } from "./page/SignIn";
-import { SignUp } from "./page/SignUp";
-import { UserRoute } from "./route/UserRoute";
-import { GuestRoute } from "./route/GuestRoute";
+import { GroupProvider } from "./context/group/GroupProvider";
 import { Group } from "./page/Group";
 import { Home } from "./page/Home";
+import { SignIn } from "./page/SignIn";
+import { SignUp } from "./page/SignUp";
 import { Todo } from "./page/Todo";
-import { GroupProvider } from "./context/group/GroupProvider";
 import { GroupRoute } from "./route/GroupRoute";
-import { Flip, ToastContainer } from "react-toastify";
+import { GuestRoute } from "./route/GuestRoute";
+import { UserRoute } from "./route/UserRoute";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        newestOnTop={true}
-        closeOnClick
-        transition={Flip}
-      />
+      <ToastContainer position="bottom-right" autoClose={3000} newestOnTop={true} closeOnClick transition={Flip} />
       <AuthProvider>
         <BrowserRouter>
           <Routes>

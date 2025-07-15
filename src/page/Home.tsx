@@ -10,9 +10,7 @@ export function Home() {
       <div className="container mx-auto px-4 py-16">
         <header className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-4">Welcome to Day Archive</h1>
-          <p className="text-xl mb-8">
-            Manage your todos and schedule with ease and efficiency
-          </p>
+          <p className="text-xl mb-8">Manage your todos and schedule with ease and efficiency</p>
           <div className="space-x-4">
             {user ? null : (
               <Link
@@ -36,12 +34,8 @@ export function Home() {
         <div className="grid md:grid-cols-2 gap-8 text-center">
           <div className="bg-white/10 p-8 rounded-xl backdrop-blur-lg">
             <CheckCircle className="w-12 h-12 mx-auto mb-4 text-green-400" />
-            <h2 className="text-2xl font-bold mb-4">
-              Efficient Todo Management
-            </h2>
-            <p>
-              Organize and prioritize your todos with our intuitive interface.
-            </p>
+            <h2 className="text-2xl font-bold mb-4">Efficient Todo Management</h2>
+            <p>Organize and prioritize your todos with our intuitive interface.</p>
           </div>
           {/* <div className="bg-white/10 p-8 rounded-xl backdrop-blur-lg">
             <Calendar className="w-12 h-12 mx-auto mb-4 text-yellow-400" />
@@ -53,9 +47,7 @@ export function Home() {
           <div className="bg-white/10 p-8 rounded-xl backdrop-blur-lg">
             <Clock className="w-12 h-12 mx-auto mb-4 text-blue-400" />
             <h2 className="text-2xl font-bold mb-4">Time-Saving Features</h2>
-            <p>
-              Boost your productivity with our time-saving tools and features.
-            </p>
+            <p>Boost your productivity with our time-saving tools and features.</p>
           </div>
         </div>
       </div>

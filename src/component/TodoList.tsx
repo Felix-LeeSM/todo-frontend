@@ -1,7 +1,7 @@
+import { Draggable, Droppable } from "@hello-pangea/dnd";
 import type { TodoInterface } from "../type/Todo.interface";
 import type { TodoStatus } from "../type/TodoStatus";
 import TodoCard from "./TodoCard";
-import { Droppable, Draggable } from "@hello-pangea/dnd";
 
 export type TodoItemProps = {
   todos: TodoInterface[];
@@ -18,22 +18,12 @@ export function TodoList({ todos, todoStatus, onDelete }: TodoItemProps) {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`flex-grow space-y-2 min-h-24 rounded-lg ${
-              snapshot.isDraggingOver ? "bg-gray-200" : ""
-            }`}
+            className={`flex-grow space-y-2 min-h-24 rounded-lg ${snapshot.isDraggingOver ? "bg-gray-200" : ""}`}
           >
             {todos.map((todo, index) => (
-              <Draggable
-                key={`item-${todo.id}`}
-                draggableId={todo.id.toString()}
-                index={index}
-              >
+              <Draggable key={`item-${todo.id}`} draggableId={todo.id.toString()} index={index}>
                 {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
+                  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                     <TodoCard todo={todo} onDelete={onDelete} />
                   </div>
                 )}

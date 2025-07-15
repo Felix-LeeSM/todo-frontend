@@ -1,5 +1,5 @@
-import { TodoInterface } from "./Todo.interface";
-import { TodoStatus } from "./TodoStatus";
+import type { TodoInterface } from "./Todo.interface";
+import type { TodoStatus } from "./TodoStatus";
 
 export type TodoAction =
   | { type: "SET_TODOS"; payload: TodoInterface[] }

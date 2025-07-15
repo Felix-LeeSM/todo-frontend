@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CreateGroupRequestDTO, GroupInterface } from "../type/Group.interface";
+import type { CreateGroupRequestDTO, GroupInterface } from "../type/Group.interface";
 
 export const groupApi = {
   getGroups: () => {
@@ -7,9 +7,7 @@ export const groupApi = {
   },
 
   createGroup: (data: CreateGroupRequestDTO) => {
-    return axios
-      .post<GroupInterface>("/api/v1/group", data)
-      .then((res) => res.data);
+    return axios.post<GroupInterface>("/api/v1/group", data).then((res) => res.data);
   },
 
   deleteGroup: (groupId: number) => {
@@ -17,8 +15,6 @@ export const groupApi = {
   },
 
   getGroupById: (groupId: number) => {
-    return axios
-      .get<GroupInterface>(`/api/v1/group/${groupId}`)
-      .then((res) => res.data);
+    return axios.get<GroupInterface>(`/api/v1/group/${groupId}`).then((res) => res.data);
   },
 };

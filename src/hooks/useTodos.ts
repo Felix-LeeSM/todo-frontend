@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from "react";
-import { useTodoReducer } from "./useTodoReducer";
 import { todoApi } from "../services/todoApi";
-import { generateOrderedString } from "../util/order";
 import type { GroupInterface } from "../type/Group.interface";
 import type { TodoInterface } from "../type/Todo.interface";
 import type { TodoStatus } from "../type/TodoStatus";
+import { generateOrderedString } from "../util/order";
+import { useTodoReducer } from "./useTodoReducer";
 
 export function useTodos(group: GroupInterface) {
   const [state, dispatch] = useTodoReducer();
@@ -12,9 +12,7 @@ export function useTodos(group: GroupInterface) {
   // Memoized sorted todos by status
   const todosByStatus = useMemo(() => {
     const sortedTodos = (status: TodoStatus) =>
-      state.todos
-        .filter((todo) => todo.status === status)
-        .sort((a, b) => a.order.localeCompare(b.order));
+      state.todos.filter((todo) => todo.status === status).sort((a, b) => a.order.localeCompare(b.order));
 
     return {
       TO_DO: sortedTodos("TO_DO"),
@@ -42,10 +40,7 @@ export function useTodos(group: GroupInterface) {
     // dispatch({ type: "ADD_TODO", payload: { title, description, order: newOrder } });
 
     try {
-      const createdTodo = await todoApi.createTodo(
-        { title, description, order: newOrder },
-        group.id
-      );
+      const createdTodo = await todoApi.createTodo({ title, description, order: newOrder }, group.id);
       dispatch({ type: "ADD_TODO", payload: createdTodo });
     } catch (error) {
       // If optimistic update was done, revert it here
@@ -65,11 +60,7 @@ export function useTodos(group: GroupInterface) {
     }
   };
 
-  const moveTodo = async (
-    todoId: number,
-    newStatus: TodoStatus,
-    newOrder: string
-  ) => {
+  const moveTodo = async (todoId: number, newStatus: TodoStatus, newOrder: string) => {
     // Optimistic update
     dispatch({
       type: "MOVE_TODO",

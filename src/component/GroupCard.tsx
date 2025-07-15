@@ -17,11 +17,11 @@ export function GroupCard({ group, onSelect, onDelete }: GroupCardProps) {
       key={group.id}
       className="bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden"
     >
-      <div
+      <button
+        type="button"
         onClick={() => onSelect(group)}
         className="cursor-pointer p-6"
         tabIndex={0}
-        role="button"
         aria-label={`Select ${group.name} group`}
       >
         <div className="flex items-center justify-between mb-4">
@@ -29,9 +29,7 @@ export function GroupCard({ group, onSelect, onDelete }: GroupCardProps) {
             <div className="bg-indigo-100 p-2 rounded-full">
               <Folder className="w-6 h-6 text-indigo-600" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-800">
-              {group.name}
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-800">{group.name}</h3>
           </div>
           <button
             type="button"
@@ -48,7 +46,7 @@ export function GroupCard({ group, onSelect, onDelete }: GroupCardProps) {
             View Tasks →
           </span>
         </div>
-      </div>
+      </button>
     </div>
   );
 }

@@ -1,9 +1,9 @@
-import { useState } from "react";
-import type { GroupInterface } from "../type/Group.interface";
 import { LoaderCircle, X } from "lucide-react";
+import { useState } from "react";
 import { groupApi } from "../services/groupApi";
-import { LoadingButton } from "./LoadingButton";
+import type { GroupInterface } from "../type/Group.interface";
 import { handleApiError } from "../util/handleApiError";
+import { LoadingButton } from "./LoadingButton";
 
 interface GroupFormProps {
   onSubmit: (group: GroupInterface) => void;
@@ -35,19 +35,13 @@ export default function GroupForm({ onSubmit, onClose }: GroupFormProps) {
       <div className="bg-white p-6 rounded-lg w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-bold">Add New Group</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="w-6 h-6" />
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Name
             </label>
             <input
@@ -61,10 +55,7 @@ export default function GroupForm({ onSubmit, onClose }: GroupFormProps) {
             />
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea

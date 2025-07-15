@@ -41,9 +41,7 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
     case "UPDATE_TODO":
       return {
         ...state,
-        todos: state.todos.map((todo) =>
-          todo.id === action.payload.id ? action.payload : todo
-        ),
+        todos: state.todos.map((todo) => (todo.id === action.payload.id ? action.payload : todo)),
       };
 
     case "MOVE_TODO":
@@ -56,7 +54,7 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
                 status: action.payload.status,
                 order: action.payload.order,
               }
-            : todo
+            : todo,
         ),
         previousState: state.todos,
       };

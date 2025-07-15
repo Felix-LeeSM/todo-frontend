@@ -1,24 +1,16 @@
-import { DropResult } from "@hello-pangea/dnd";
-import { generateOrderedString } from "../util/order";
-import { handleApiError } from "../util/handleApiError";
+import type { DropResult } from "@hello-pangea/dnd";
 import type { TodoInterface } from "../type/Todo.interface";
 import type { TodoStatus } from "../type/TodoStatus";
+import { handleApiError } from "../util/handleApiError";
+import { generateOrderedString } from "../util/order";
 
 interface UseTodoDragDropProps {
   todos: TodoInterface[];
   todosByStatus: Record<TodoStatus, TodoInterface[]>;
-  moveTodo: (
-    todoId: number,
-    newStatus: TodoStatus,
-    newOrder: string
-  ) => Promise<void>;
+  moveTodo: (todoId: number, newStatus: TodoStatus, newOrder: string) => Promise<void>;
 }
 
-export function useTodoDragDrop({
-  todos,
-  todosByStatus,
-  moveTodo,
-}: UseTodoDragDropProps) {
+export function useTodoDragDrop({ todos, todosByStatus, moveTodo }: UseTodoDragDropProps) {
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
@@ -30,9 +22,7 @@ export function useTodoDragDrop({
     const newStatus = destination.droppableId as TodoStatus;
     const statusTodos = todosByStatus[newStatus];
 
-    const tempStatusTodos = statusTodos.filter(
-      (todo) => todo.id.toString() !== draggableId
-    );
+    const tempStatusTodos = statusTodos.filter((todo) => todo.id.toString() !== draggableId);
 
     let prevTodo: TodoInterface | undefined;
     let nextTodo: TodoInterface | undefined;

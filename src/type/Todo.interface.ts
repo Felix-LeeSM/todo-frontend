@@ -1,4 +1,4 @@
-import { TodoStatus } from "./TodoStatus";
+import type { TodoStatus } from "./TodoStatus";
 
 export interface TodoInterface {
   id: number;
@@ -10,7 +10,4 @@ export interface TodoInterface {
   order: string;
 }
 
-export type CreateTodoRequestDTO = Pick<
-  TodoInterface,
-  "title" | "description" | "order"
->;
+export type CreateTodoRequestDTO = Pick<TodoInterface, "title" | "description" | "order">;

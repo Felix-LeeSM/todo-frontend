@@ -1,19 +1,18 @@
 import { DragDropContext } from "@hello-pangea/dnd";
-import { useTodos } from "../hooks/useTodos";
 import { useTodoDragDrop } from "../hooks/useTodoDragDrop";
-import { handleApiError } from "../util/handleApiError";
-import { TodoList } from "./TodoList";
-import TodoForm from "./TodoForm";
+import { useTodos } from "../hooks/useTodos";
 import type { GroupInterface } from "../type/Group.interface";
-import { TodoInterface } from "../type/Todo.interface";
+import type { TodoInterface } from "../type/Todo.interface";
+import { handleApiError } from "../util/handleApiError";
+import TodoForm from "./TodoForm";
+import { TodoList } from "./TodoList";
 
 interface TodoManagerProps {
   group: GroupInterface;
 }
 
 export default function TodoManager({ group }: TodoManagerProps) {
-  const { todos, todosByStatus, loading, addTodo, deleteTodo, moveTodo } =
-    useTodos(group);
+  const { todos, todosByStatus, loading, addTodo, deleteTodo, moveTodo } = useTodos(group);
   const { handleDragEnd } = useTodoDragDrop({ todos, todosByStatus, moveTodo });
 
   const handleAddTodo = (title: string, description: string) => {
@@ -33,16 +32,14 @@ export default function TodoManager({ group }: TodoManagerProps) {
         ) : (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
-              {(["TO_DO", "IN_PROGRESS", "DONE", "ON_HOLD"] as const).map(
-                (status) => (
-                  <TodoList
-                    key={`list-${status}`}
-                    todoStatus={status}
-                    todos={todosByStatus[status]}
-                    onDelete={handleDeleteTodo}
-                  />
-                )
-              )}
+              {(["TO_DO", "IN_PROGRESS", "DONE", "ON_HOLD"] as const).map((status) => (
+                <TodoList
+                  key={`list-${status}`}
+                  todoStatus={status}
+                  todos={todosByStatus[status]}
+                  onDelete={handleDeleteTodo}
+                />
+              ))}
             </div>
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-2">Add New Todo</h3>

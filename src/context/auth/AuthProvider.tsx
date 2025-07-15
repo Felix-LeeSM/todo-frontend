@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { AuthContext } from "./AuthContext";
+import { LoaderCircle } from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { authApi } from "../../services/authApi";
 
 import type { UserInterface } from "../../type/User.interface";
-import { LoaderCircle } from "lucide-react";
+import { AuthContext } from "./AuthContext";
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}): React.ReactElement {
+export function AuthProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [user, setUser] = useState<UserInterface>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,9 +31,7 @@ export function AuthProvider({
       {isLoading ? (
         <LoaderCircle className="w-10 h-10 mx-auto mt-20 animate-spin" />
       ) : (
-        <AuthContext.Provider value={contextValue}>
-          {children}
-        </AuthContext.Provider>
+        <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
       )}
     </>
   );

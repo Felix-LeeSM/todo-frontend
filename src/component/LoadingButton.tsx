@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 export type LoadingButtonProps = {
   isLoading: boolean;
@@ -8,13 +8,7 @@ export type LoadingButtonProps = {
   type?: "button" | "reset" | "submit";
 };
 
-export function LoadingButton({
-  isLoading,
-  children,
-  childrenWhileLoading,
-  className,
-  type,
-}: LoadingButtonProps) {
+export function LoadingButton({ isLoading, children, childrenWhileLoading, className, type }: LoadingButtonProps) {
   return (
     <button
       type={type}

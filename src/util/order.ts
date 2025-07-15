@@ -7,10 +7,7 @@ const MAX_LENGTH = 256;
  * @param right 오른쪽 경계 문자열 (선택적)
  * @returns 사이에 삽입될 문자열
  */
-export const generateOrderedString = (
-  left?: string,
-  right?: string
-): string => {
+export const generateOrderedString = (left?: string, right?: string): string => {
   if (!left && !right) {
     return "i";
   }
@@ -34,7 +31,7 @@ const generateMiddleChar = (): string => {
   const randomOffset = Math.floor(Math.random() * 5) - 2; // -2 ~ 2
   const targetIndex = Math.max(
     1, // ✨ 수정: '0'을 반환하지 않도록 최소값을 1로 설정
-    Math.min(CHARSET.length - 1, midIndex + randomOffset)
+    Math.min(CHARSET.length - 1, midIndex + randomOffset),
   );
   return CHARSET[targetIndex];
 };
@@ -81,9 +78,7 @@ const generateBefore = (str: string): string => {
 
   // 문자열 전체가 '0'으로만 구성된 경우 (이론상 발생하면 안 되지만 방어 코드)
   if (i === str.length) {
-    throw new Error(
-      "Cannot generate a key before an all-minimum-character key."
-    );
+    throw new Error("Cannot generate a key before an all-minimum-character key.");
   }
 
   // '0'이 아닌 첫 문자를 찾음
