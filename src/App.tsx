@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Flip, ToastContainer } from "react-toastify";
-import { AuthProvider } from "./context/auth/AuthProvider";
-import { GroupProvider } from "./context/group/GroupProvider";
+import { AuthProvider } from "./domain/auth/contexts/AuthProvider";
+import { GroupProvider } from "./domain/group/contexts/GroupProvider";
 import { Group } from "./page/Group";
 import { Home } from "./page/Home";
 import { SignIn } from "./page/SignIn";

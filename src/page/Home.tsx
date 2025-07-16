@@ -1,7 +1,7 @@
+import { AuthContext } from "@domain/auth/contexts/AuthContext";
 import { ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/auth/AuthContext";
 
 export function Home() {
   const { user } = useContext(AuthContext);

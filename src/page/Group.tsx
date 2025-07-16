@@ -1,4 +1,4 @@
-import GroupList from "../component/GroupList";
+import GroupList from "@domain/group/components/GroupList";
 
 export function Group() {
   return (

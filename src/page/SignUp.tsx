@@ -1,5 +1,5 @@
+import { SignUpForm } from "@domain/auth/components/SignUpForm";
 import { Link } from "react-router-dom";
-import { SignUpForm } from "../component/SignUpForm";
 
 export function SignUp() {
   return (

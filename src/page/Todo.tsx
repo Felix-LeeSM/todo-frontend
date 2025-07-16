@@ -1,7 +1,7 @@
+import { GroupContext } from "@domain/group/contexts/GroupContext";
+import TodoManager from "@domain/todo/components/TodoManager";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import TodoManager from "../component/TodoManager";
-import { GroupContext } from "../context/group/GroupContext";
 
 export function Todo() {
   const { group } = useContext(GroupContext);

@@ -1,5 +1,5 @@
+import { SignInForm } from "@domain/auth/components/SignInForm";
 import { Link } from "react-router-dom";
-import { SignInForm } from "../component/SignInForm";
 
 export function SignIn() {
   return (

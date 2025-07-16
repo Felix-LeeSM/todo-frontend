@@ -1,0 +1,20 @@
+import type { SignInRequestDTO, SignUpRequestDTO, UserInterface } from "@domain/auth/types/User.interface";
+import axios, { type AxiosResponse } from "axios";
+
+export const authApi = {
+  signIn: (data: SignInRequestDTO): Promise<UserInterface> => {
+    return axios.post<UserInterface>("/api/v1/user/token/access-token", data).then((res) => res.data);
+  },
+
+  signUp: (data: SignUpRequestDTO): Promise<UserInterface> => {
+    return axios.post<UserInterface>("/api/v1/user", data).then((res) => res.data);
+  },
+
+  signOut: (): Promise<AxiosResponse<unknown, unknown>> => {
+    return axios.delete("/api/v1/user/token");
+  },
+
+  getMe: (): Promise<UserInterface> => {
+    return axios.get<UserInterface>("/api/v1/user/me").then((res) => res.data);
+  },
+};
