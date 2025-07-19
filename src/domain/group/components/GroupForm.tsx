@@ -1,99 +1,67 @@
-import { groupApi } from "@domain/group/services/groupApi";
-import type { GroupInterface } from "@domain/group/types/Group.interface";
-import { LoadingButton } from "@domain/shared/components/LoadingButton";
-import { LoaderCircle, X } from "lucide-react";
+import { Button } from "@domain/shared/components/ui/button";
+import { Input } from "@domain/shared/components/ui/input";
+import { Label } from "@domain/shared/components/ui/label";
+import { Textarea } from "@domain/shared/components/ui/textarea";
 import { useState } from "react";
-import { handleApiError } from "@/shared/handleApiError";
 
+export type GroupFormData = { name: string; description: string };
 interface GroupFormProps {
-  onSubmit: (group: GroupInterface) => void;
+  onSubmit: (formData: GroupFormData) => Promise<void>;
   onClose: () => void;
 }
 
 export default function GroupForm({ onSubmit, onClose }: GroupFormProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    setIsLoading(true);
-
-    groupApi
-      .createGroup({ name, description })
-      .then((response) => onSubmit(response))
-      .then(() => onClose())
-      .then(() => setName(""))
-      .then(() => setDescription(""))
-      .catch(handleApiError)
-      .finally(() => setIsLoading(false));
+    onSubmit(formData).then(() => {
+      setFormData({ name: "", description: "" });
+      onClose();
+    });
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold">Add New Group</h3>
-          <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-6 h-6" />
-          </button>
+    <form>
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="groupName">그룹 이름</Label>
+          <Input
+            id="groupName"
+            placeholder="그룹 이름을 입력하세요"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+          />
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              minLength={5}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={3}
-              required
-            />
-          </div>
-          <div className="flex justify-end space-x-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-            >
-              Cancel
-            </button>
-
-            <LoadingButton
-              isLoading={isLoading}
-              className="py-2 px-4"
-              type="submit"
-              childrenWhileLoading={
-                <>
-                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                    <LoaderCircle className="animate-spin h-5 w-5" />
-                  </span>
-                  Creating Group...
-                </>
-              }
-            >
-              Create Group
-            </LoadingButton>
-          </div>
-        </form>
+        <div className="space-y-2">
+          <Label htmlFor="groupDescription">설명 (선택사항)</Label>
+          <Textarea
+            id="groupDescription"
+            placeholder="그룹에 대한 간단한 설명을 입력하세요"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="flex justify-end space-x-2">
+          <Button variant="outline" onClick={() => onClose()}>
+            취소
+          </Button>
+          <Button onClick={handleSubmit}>그룹 만들기</Button>
+        </div>
       </div>
-    </div>
+    </form>
   );
 }

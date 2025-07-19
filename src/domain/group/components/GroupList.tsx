@@ -1,13 +1,13 @@
 import { GroupCard } from "@domain/group/components/GroupCard";
 import GroupForm from "@domain/group/components/GroupForm";
 import { groupApi } from "@domain/group/services/groupApi";
-import type { GroupInterface } from "@domain/group/types/Group.interface";
+import type { IGroup } from "@domain/group/types/Group.interface";
 import { LoaderCircle, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { handleApiError } from "@/shared/handleApiError";
 
 export default function GroupList() {
-  const [groups, setGroups] = useState<GroupInterface[]>([]);
+  const [groups, setGroups] = useState<IGroup[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,9 +20,9 @@ export default function GroupList() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const addGroup = (group: GroupInterface) => setGroups((groups) => [...groups, group]);
+  const addGroup = (group: IGroup) => setGroups((groups) => [...groups, group]);
 
-  const onDeleteGroup = (group: GroupInterface) =>
+  const onDeleteGroup = (group: IGroup) =>
     groupApi
       .deleteGroup(group.id)
       .then(() => setGroups((groups) => groups.filter((g) => g.id !== group.id)))
@@ -50,7 +50,7 @@ export default function GroupList() {
         {isLoading
           ? null
           : groups.map((group) => (
-              <GroupCard to={`/group/${group.id}`} onDelete={onDeleteGroup} group={group} key={`group-${group.id}`} />
+              <GroupCard to={`/groups/${group.id}`} onDelete={onDeleteGroup} group={group} key={`group-${group.id}`} />
             ))}
       </div>
       {isModalOpen && <GroupForm onSubmit={addGroup} onClose={() => setIsModalOpen(false)} />}

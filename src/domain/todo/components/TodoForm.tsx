@@ -6,7 +6,7 @@ export type TodoFormProps = {
   onSubmit: (title: string, description: string) => void;
 };
 
-export default function TodoForm({ onSubmit }: TodoFormProps) {
+export function TodoForm({ onSubmit }: TodoFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);

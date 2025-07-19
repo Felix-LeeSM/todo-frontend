@@ -1,12 +1,12 @@
-import type { GroupInterface } from "@domain/group/types/Group.interface";
+import type { IGroup } from "@domain/group/types/Group.interface";
 import { useTodoReducer } from "@domain/todo/hooks/useTodoReducer";
 import { todoApi } from "@domain/todo/services/todoApi";
-import type { TodoInterface } from "@domain/todo/types/Todo.interface";
+import type { ITodo } from "@domain/todo/types/Todo.interface";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import { useEffect, useMemo } from "react";
 import { generateOrderedString } from "@/shared/order";
 
-export function useTodos(group: GroupInterface) {
+export function useTodos(group: IGroup) {
   const [state, dispatch] = useTodoReducer();
 
   // Memoized sorted todos by status
@@ -49,7 +49,7 @@ export function useTodos(group: GroupInterface) {
     }
   };
 
-  const deleteTodo = async (todo: TodoInterface) => {
+  const deleteTodo = async (todo: ITodo) => {
     dispatch({ type: "DELETE_TODO", payload: { id: todo.id } });
 
     try {

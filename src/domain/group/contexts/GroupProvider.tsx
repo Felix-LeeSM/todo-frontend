@@ -1,20 +1,18 @@
 import { GroupContext } from "@domain/group/contexts/GroupContext";
 import { groupApi } from "@domain/group/services/groupApi";
-import type { GroupInterface } from "@domain/group/types/Group.interface";
-import { LoaderCircle } from "lucide-react";
+import type { IGroupDetails, IGroupMembersInfo } from "@domain/group/types/Group.interface";
+import type { ITodo } from "@domain/todo/types/Todo.interface";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 
-export function GroupProvider({ children }: { children: React.ReactNode }): React.ReactElement {
-  const [group, setGroup] = useState<GroupInterface>();
+export function GroupProvider({ loadingComponent }: { loadingComponent?: React.ReactNode }): React.ReactElement {
+  const [groupDetails, setGroupDetails] = useState<IGroupDetails>();
+  const [groupMembersInfo, setGroupMembersInfo] = useState<IGroupMembersInfo>();
+  const [todos, setTodos] = useState<ITodo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const { groupId } = useParams<{ groupId: string }>();
-
-  const handleSetGroup = (group?: GroupInterface) => {
-    setGroup(group);
-  };
 
   useEffect(() => {
     if (!groupId) return;
@@ -23,19 +21,29 @@ export function GroupProvider({ children }: { children: React.ReactNode }): Reac
 
     groupApi
       .getGroupById(parsedId)
-      .then((res) => setGroup(res))
-      .catch(() => setGroup(undefined))
+      .then((res) => {
+        setGroupDetails({ id: res.id, name: res.name, description: res.description });
+        setGroupMembersInfo({ members: res.members, memberCount: res.memberCount, myRole: res.myRole });
+        setTodos(res.todos);
+      })
+      .catch(() => {
+        setGroupDetails(undefined);
+        setGroupMembersInfo(undefined);
+        setTodos([]);
+      })
       .finally(() => setIsLoading(false));
   }, [groupId]);
 
-  const contextValue = { group, handleSetGroup };
+  const contextValue = { groupDetails, setGroupDetails, groupMembersInfo, setGroupMembersInfo, todos, setTodos };
 
   return (
     <>
       {isLoading ? (
-        <LoaderCircle className="w-10 h-10 mx-auto mt-20 animate-spin" />
+        loadingComponent
       ) : (
-        <GroupContext.Provider value={contextValue}>{children}</GroupContext.Provider>
+        <GroupContext.Provider value={contextValue}>
+          <Outlet />
+        </GroupContext.Provider>
       )}
     </>
   );

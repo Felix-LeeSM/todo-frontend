@@ -1,13 +1,9 @@
 import { GroupContext } from "@domain/group/contexts/GroupContext";
-import { type ReactNode, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 
-export function GroupRoute({ children }: { children: ReactNode }) {
-  const { group } = useContext(GroupContext);
+export function GroupRoute() {
+  const { groupDetails } = useContext(GroupContext);
 
-  if (!group) {
-    return <Navigate to="/group" replace />;
-  }
-
-  return children;
+  return groupDetails ? <Outlet /> : <Navigate to="/groups" replace />;
 }

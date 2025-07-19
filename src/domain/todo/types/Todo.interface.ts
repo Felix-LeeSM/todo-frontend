@@ -1,6 +1,6 @@
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 
-export interface TodoInterface {
+export interface ITodo {
   id: number;
   title: string;
   description: string;
@@ -9,5 +9,3 @@ export interface TodoInterface {
   groupId: number;
   order: string;
 }
-
-export type CreateTodoRequestDTO = Pick<TodoInterface, "title" | "description" | "order">;

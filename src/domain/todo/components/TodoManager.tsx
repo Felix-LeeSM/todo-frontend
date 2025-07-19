@@ -1,14 +1,14 @@
-import type { GroupInterface } from "@domain/group/types/Group.interface";
+import type { IGroup } from "@domain/group/types/Group.interface";
+import { TodoForm } from "@domain/todo/components/TodoForm";
+import { TodoList } from "@domain/todo/components/TodoList";
 import { useTodoDragDrop } from "@domain/todo/hooks/useTodoDragDrop";
 import { useTodos } from "@domain/todo/hooks/useTodos";
-import type { TodoInterface } from "@domain/todo/types/Todo.interface";
+import type { ITodo } from "@domain/todo/types/Todo.interface";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { handleApiError } from "@/shared/handleApiError";
-import TodoForm from "./TodoForm";
-import { TodoList } from "./TodoList";
 
 interface TodoManagerProps {
-  group: GroupInterface;
+  group: IGroup;
 }
 
 export default function TodoManager({ group }: TodoManagerProps) {
@@ -19,7 +19,7 @@ export default function TodoManager({ group }: TodoManagerProps) {
     addTodo(title, description).catch(handleApiError);
   };
 
-  const handleDeleteTodo = (todo: TodoInterface) => {
+  const handleDeleteTodo = (todo: ITodo) => {
     deleteTodo(todo).catch(handleApiError);
   };
 

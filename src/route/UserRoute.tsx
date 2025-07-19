@@ -1,15 +1,15 @@
 import { AuthContext } from "@domain/auth/contexts/AuthContext";
-import { type ReactNode, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export function UserRoute({ children }: { children: ReactNode }) {
+export function UserRoute() {
   const { user } = useContext(AuthContext);
 
   if (!user) {
-    toast.warning("You need to sign in first.");
+    toast.warning("로그인을 먼저 진행해주십시오.");
     return <Navigate to="/signin" replace />;
   }
 
-  return children;
+  return <Outlet />;
 }

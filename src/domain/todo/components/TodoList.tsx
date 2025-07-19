@@ -1,12 +1,12 @@
-import type { TodoInterface } from "@domain/todo/types/Todo.interface";
+import TodoCard from "@domain/todo/components/TodoCard";
+import type { ITodo } from "@domain/todo/types/Todo.interface";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import TodoCard from "./TodoCard";
 
 export type TodoItemProps = {
-  todos: TodoInterface[];
+  todos: ITodo[];
   todoStatus: TodoStatus;
-  onDelete: (todo: TodoInterface) => void;
+  onDelete: (todo: ITodo) => void;
 };
 
 export function TodoList({ todos, todoStatus, onDelete }: TodoItemProps) {

@@ -1,11 +1,11 @@
-import type { TodoInterface } from "@domain/todo/types/Todo.interface";
+import type { ITodo } from "@domain/todo/types/Todo.interface";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import { CheckCircle, Circle, Clock, GripVertical, PlayCircle, X } from "lucide-react";
 import type { JSX } from "react";
 
 interface TodoCardProps {
-  todo: TodoInterface;
-  onDelete: (todo: TodoInterface) => void;
+  todo: ITodo;
+  onDelete: (todo: ITodo) => void;
 }
 
 export default function TodoCard({ todo, onDelete }: TodoCardProps) {
