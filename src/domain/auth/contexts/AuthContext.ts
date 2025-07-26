@@ -1,9 +1,9 @@
-import type { IUser } from "@domain/auth/types/User.interface";
+import type { User } from "@domain/auth/types/User";
 import { createContext } from "react";
 
 export interface AuthContextType {
-  user?: IUser;
-  handleSignIn: (user: IUser) => void;
+  user?: User;
+  handleSignIn: (user: User) => void;
   handleLogOut: () => void;
 }
 

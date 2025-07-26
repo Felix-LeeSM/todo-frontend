@@ -1,12 +1,11 @@
-import type { IGroup } from "@domain/group/types/Group.interface";
+import type { Group } from "@domain/group/types/Group";
 import { useTodoReducer } from "@domain/todo/hooks/useTodoReducer";
 import { todoApi } from "@domain/todo/services/todoApi";
-import type { ITodo } from "@domain/todo/types/Todo.interface";
+import type { Todo } from "@domain/todo/types/Todo";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import { useEffect, useMemo } from "react";
-import { generateOrderedString } from "@/shared/order";
 
-export function useTodos(group: IGroup) {
+export function useTodos(group: Group) {
   const [state, dispatch] = useTodoReducer();
 
   // Memoized sorted todos by status
@@ -32,15 +31,8 @@ export function useTodos(group: IGroup) {
 
   // Actions
   const addTodo = async (title: string, description: string) => {
-    const lastTodo = todosByStatus.TO_DO[todosByStatus.TO_DO.length - 1];
-    const newOrder = generateOrderedString(lastTodo?.order);
-
-    // Optimistic update (optional, but good for UX)
-    // We don't have an ID yet, so we can't add it to the state directly
-    // dispatch({ type: "ADD_TODO", payload: { title, description, order: newOrder } });
-
     try {
-      const createdTodo = await todoApi.createTodo({ title, description, order: newOrder }, group.id);
+      const createdTodo = await todoApi.createTodo({ title, description }, group.id);
       dispatch({ type: "ADD_TODO", payload: createdTodo });
     } catch (error) {
       // If optimistic update was done, revert it here
@@ -49,7 +41,7 @@ export function useTodos(group: IGroup) {
     }
   };
 
-  const deleteTodo = async (todo: ITodo) => {
+  const deleteTodo = async (todo: Todo) => {
     dispatch({ type: "DELETE_TODO", payload: { id: todo.id } });
 
     try {

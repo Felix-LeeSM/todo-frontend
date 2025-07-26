@@ -3,10 +3,11 @@ import { Input } from "@domain/shared/components/ui/input";
 import { Label } from "@domain/shared/components/ui/label";
 import { Textarea } from "@domain/shared/components/ui/textarea";
 import { useState } from "react";
+import type { CreateGroupRequestDTO } from "../types/dto/group.dto";
 
 export type GroupFormData = { name: string; description: string };
 interface GroupFormProps {
-  onSubmit: (formData: GroupFormData) => Promise<void>;
+  onSubmit: (formData: CreateGroupRequestDTO) => Promise<void>;
   onClose: () => void;
 }
 
@@ -15,6 +16,8 @@ export default function GroupForm({ onSubmit, onClose }: GroupFormProps) {
     name: "",
     description: "",
   });
+
+  const [_isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
@@ -26,10 +29,16 @@ export default function GroupForm({ onSubmit, onClose }: GroupFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    onSubmit(formData).then(() => {
-      setFormData({ name: "", description: "" });
-      onClose();
-    });
+    setIsLoading(true);
+
+    onSubmit(formData)
+      .then(() => {
+        setFormData({ name: "", description: "" });
+        onClose();
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (

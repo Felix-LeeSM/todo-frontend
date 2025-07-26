@@ -3,7 +3,7 @@ import { authApi } from "@domain/auth/services/authApi";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@domain/shared/components/ui/card";
 import { CheckCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { handleApiError } from "@/shared/handleApiError";
+import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
 export function SignUpPage() {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ export function SignUpPage() {
     return authApi
       .signUp(formData)
       .then(() => navigate("/signin"))
-      .catch(handleApiError);
+      .catch(toastErrorMessage);
   };
 
   return (

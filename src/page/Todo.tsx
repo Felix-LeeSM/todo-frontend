@@ -1,10 +1,9 @@
-import { GroupContext } from "@domain/group/contexts/GroupContext";
+import { useGroupInfo } from "@domain/group/hooks/useGroupInfo";
 import TodoManager from "@domain/todo/components/TodoManager";
-import { useContext } from "react";
 import { Link } from "react-router-dom";
 
 export function Todo() {
-  const { groupDetails: group } = useContext(GroupContext);
+  const { group } = useGroupInfo();
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">

@@ -52,6 +52,7 @@ export function LandingPage() {
           <Button size="lg" variant="outline" asChild>
             <button
               type="button"
+              className="cursor-pointer"
               onClick={() => {
                 showDemo();
               }}

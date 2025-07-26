@@ -1,4 +1,4 @@
-import type { GroupRole, IDetailedGroup } from "@domain/group/types/Group.interface";
+import type { DetailedGroup, GroupRole } from "@domain/group/types/Group";
 import { Avatar, AvatarFallback, AvatarImage } from "@domain/shared/components/ui/avatar";
 import { Badge } from "@domain/shared/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@domain/shared/components/ui/card";
@@ -7,7 +7,7 @@ import { Calendar, Crown, Settings, User, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export interface GroupCardProps {
-  group: IDetailedGroup;
+  group: DetailedGroup;
   to: string;
 }
 

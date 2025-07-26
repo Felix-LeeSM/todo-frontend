@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@doma
 import { CheckCircle } from "lucide-react";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { handleApiError } from "@/shared/handleApiError";
+import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
 export function SignInPage() {
   const { handleSignIn } = useContext(AuthContext);
@@ -17,7 +17,7 @@ export function SignInPage() {
       .signIn(formData)
       .then((res) => handleSignIn(res))
       .then(() => navigate("/groups"))
-      .catch(handleApiError);
+      .catch(toastErrorMessage);
   };
 
   return (

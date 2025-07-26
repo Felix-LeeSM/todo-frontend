@@ -1,11 +1,11 @@
-import type { ITodo } from "@domain/todo/types/Todo.interface";
+import type { Todo } from "@domain/todo/types/Todo";
 import type { TodoAction } from "@domain/todo/types/TodoActions";
 import { useReducer } from "react";
 
 interface TodoState {
-  todos: ITodo[];
+  todos: Todo[];
   loading: boolean;
-  previousState: ITodo[]; // for rollback
+  previousState: Todo[]; // for rollback
 }
 
 const initialState: TodoState = {

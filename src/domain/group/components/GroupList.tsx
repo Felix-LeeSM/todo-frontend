@@ -1,13 +1,16 @@
+import { useAuth } from "@domain/auth/hooks/useAuth";
 import { GroupCard } from "@domain/group/components/GroupCard";
 import GroupForm from "@domain/group/components/GroupForm";
 import { groupApi } from "@domain/group/services/groupApi";
-import type { IGroup } from "@domain/group/types/Group.interface";
+import type { DetailedGroup } from "@domain/group/types/Group";
 import { LoaderCircle, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { handleApiError } from "@/shared/handleApiError";
+import { toastErrorMessage } from "@/shared/toastErrorMessage";
+import type { CreateGroupRequestDTO } from "../types/dto/group.dto";
 
 export default function GroupList() {
-  const [groups, setGroups] = useState<IGroup[]>([]);
+  const { user } = useAuth();
+  const [detailedGroups, setDtailedGroups] = useState<DetailedGroup[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -15,18 +18,36 @@ export default function GroupList() {
     setIsLoading(true);
     groupApi
       .getGroups()
-      .then((response) => setGroups(response))
-      .catch(handleApiError)
+      .then((response) => setDtailedGroups(response))
+      .catch(toastErrorMessage)
       .finally(() => setIsLoading(false));
   }, []);
 
-  const addGroup = (group: IGroup) => setGroups((groups) => [...groups, group]);
+  const onSubmit = (group: CreateGroupRequestDTO) => {
+    return groupApi
+      .createGroup(group)
+      .then((created) => {
+        const detailedGroup: DetailedGroup = {
+          ...created,
+          todoCount: 0,
+          completedTodoCount: 0,
+          members: [
+            {
+              id: user.id,
+              groupId: created.id,
+              role: "OWNER",
+              nickname: user.nickname,
+            },
+          ],
+          memberCount: 1,
+          myRole: "OWNER",
+        };
 
-  const onDeleteGroup = (group: IGroup) =>
-    groupApi
-      .deleteGroup(group.id)
-      .then(() => setGroups((groups) => groups.filter((g) => g.id !== group.id)))
-      .catch(handleApiError);
+        setDtailedGroups((groups) => [...groups, detailedGroup]);
+      })
+      .catch(toastErrorMessage);
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-6">
@@ -49,11 +70,11 @@ export default function GroupList() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {isLoading
           ? null
-          : groups.map((group) => (
-              <GroupCard to={`/groups/${group.id}`} onDelete={onDeleteGroup} group={group} key={`group-${group.id}`} />
+          : detailedGroups.map((group) => (
+              <GroupCard to={`/groups/${group.id}`} group={group} key={`group-${group.id}`} />
             ))}
       </div>
-      {isModalOpen && <GroupForm onSubmit={addGroup} onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <GroupForm onSubmit={onSubmit} onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 }

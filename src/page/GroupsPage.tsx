@@ -2,8 +2,8 @@ import { useAuth } from "@domain/auth/hooks/useAuth";
 import { GroupCard } from "@domain/group/components/GroupCard";
 import GroupForm, { type GroupFormData } from "@domain/group/components/GroupForm";
 import { groupApi } from "@domain/group/services/groupApi";
-import type { IDetailedGroup } from "@domain/group/types/Group.interface";
-import type { IMember } from "@domain/group/types/Member.interface";
+import type { DetailedGroup } from "@domain/group/types/Group";
+import type { Member } from "@domain/group/types/Member";
 import { Button } from "@domain/shared/components/ui/button";
 import {
   Dialog,
@@ -15,11 +15,11 @@ import {
 } from "@domain/shared/components/ui/dialog";
 import { Plus, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { handleApiError } from "@/shared/handleApiError";
+import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
 export function GroupsPage() {
   const { user } = useAuth();
-  const [groups, setGroups] = useState<IDetailedGroup[]>([]);
+  const [groups, setGroups] = useState<DetailedGroup[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
@@ -28,20 +28,19 @@ export function GroupsPage() {
     groupApi
       .getGroups()
       .then((groups) => setGroups(groups))
-      .catch(handleApiError)
+      .catch(toastErrorMessage)
       .finally(() => setIsLoading(false));
   }, []);
 
   const handleSubmit = (formData: GroupFormData) => {
     return groupApi.createGroup(formData).then((group) => {
-      const member: IMember = {
+      const member: Member = {
         id: user.id,
-        username: user.username,
         nickname: user.nickname,
         role: "OWNER",
         groupId: group.id,
       };
-      const newGroup: IDetailedGroup = {
+      const newGroup: DetailedGroup = {
         todoCount: 0,
         completedTodoCount: 0,
         members: [member],

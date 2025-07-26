@@ -1,11 +1,9 @@
 import { AuthProvider } from "@domain/auth/contexts/AuthProvider";
 import { GroupProvider } from "@domain/group/contexts/GroupProvider";
-import { Todo } from "@page/Todo";
 import { GroupRoute } from "@route/GroupRoute";
 import { GuestRoute } from "@route/GuestRoute";
 import { UserRoute } from "@route/UserRoute";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Flip, ToastContainer } from "react-toastify";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { GroupsPage } from "@/page/GroupsPage";
 import { NotFoundPage } from "@/page/NotFoundPage";
 import { SignInPage } from "@/page/SignInPage";
@@ -15,36 +13,35 @@ import { Layout } from "@domain/shared/components/Layout";
 import { CalandarPage } from "@/page/CalendarPage";
 import { LandingPage } from "@/page/LandingPage";
 import { SignUpPage } from "@/page/SignUpPage";
+import { GroupTodoPage } from "./page/GroupTodoPage";
 
 function App() {
+  const navigate = useNavigate();
   return (
-    <>
-      <ToastContainer position="bottom-right" autoClose={3000} newestOnTop={true} closeOnClick transition={Flip} />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route element={<GuestRoute />}>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/signin" element={<SignInPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route element={<GuestRoute />}>
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Route>
 
-            <Route element={<UserRoute />}>
+        <Route element={<UserRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/groups" element={<GroupsPage />} />
+            <Route path="/calendar" element={<CalandarPage />} />
+          </Route>
+          <Route path="/groups/:groupId" element={<GroupProvider onNotFound={() => navigate("/groups")} />}>
+            <Route element={<GroupRoute />}>
               <Route element={<Layout />}>
-                <Route path="/groups" element={<GroupsPage />} />
-                <Route path="/calendar" element={<CalandarPage />} />
-                <Route path="/groups/:groupId" element={<GroupProvider />}>
-                  <Route element={<GroupRoute />}>
-                    <Route path="/" element={<Todo />} />
-                  </Route>
-                </Route>
+                <Route index element={<GroupTodoPage />} />
               </Route>
             </Route>
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </>
+          </Route>
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 

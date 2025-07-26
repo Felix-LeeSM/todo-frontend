@@ -1,12 +1,12 @@
-import type { ITodo } from "@domain/todo/types/Todo.interface";
+import type { Todo } from "@domain/todo/types/Todo";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import type { DropResult } from "@hello-pangea/dnd";
-import { handleApiError } from "@/shared/handleApiError";
 import { generateOrderedString } from "@/shared/order";
+import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
 interface UseTodoDragDropProps {
-  todos: ITodo[];
-  todosByStatus: Record<TodoStatus, ITodo[]>;
+  todos: Todo[];
+  todosByStatus: Record<TodoStatus, Todo[]>;
   moveTodo: (todoId: number, newStatus: TodoStatus, newOrder: string) => Promise<void>;
 }
 
@@ -24,8 +24,8 @@ export function useTodoDragDrop({ todos, todosByStatus, moveTodo }: UseTodoDragD
 
     const tempStatusTodos = statusTodos.filter((todo) => todo.id.toString() !== draggableId);
 
-    let prevTodo: ITodo | undefined;
-    let nextTodo: ITodo | undefined;
+    let prevTodo: Todo | undefined;
+    let nextTodo: Todo | undefined;
 
     if (destination.index > 0) {
       prevTodo = tempStatusTodos[destination.index - 1];
@@ -39,7 +39,7 @@ export function useTodoDragDrop({ todos, todosByStatus, moveTodo }: UseTodoDragD
     try {
       await moveTodo(movedTodo.id, newStatus, newOrder);
     } catch (error) {
-      handleApiError(error);
+      toastErrorMessage(error);
     }
   };
 
