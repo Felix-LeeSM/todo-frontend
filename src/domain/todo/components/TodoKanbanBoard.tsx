@@ -11,7 +11,6 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useGroupTodos } from "@domain/group/hooks/useGroupTodos";
 import { DraggableTodoCard } from "@domain/todo/components/DraggableTodoCard";
 import { DroppableTodoColumn } from "@domain/todo/components/DroppableTodoColumn";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
@@ -49,12 +48,11 @@ type DragData = { type: "TODO_ITEM"; data: TodoWithStarred } | { type: "TODO_COL
 
 interface TodoKanbanBoardProps {
   todos: TodoWithStarred[];
+  moveTodo: (todoId: number, newStatus: TodoStatus, destinationId?: number) => void;
 }
 
-export function TodoKanbanBoard({ todos }: TodoKanbanBoardProps) {
+export function TodoKanbanBoard({ todos, moveTodo }: TodoKanbanBoardProps) {
   const [activeTodo, setActiveTodo] = useState<TodoWithStarred | null>(null);
-
-  const { moveTodo } = useGroupTodos();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -99,7 +97,7 @@ export function TodoKanbanBoard({ todos }: TodoKanbanBoardProps) {
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveTodo(null);
     const { active, over } = event;
-    if (!over) return;
+    if (!over || active.id === over.id) return;
 
     const activeDragData = active.data.current as DragData;
     const overDragData = over.data.current as DragData;
@@ -122,11 +120,10 @@ export function TodoKanbanBoard({ todos }: TodoKanbanBoardProps) {
       newStatus = overTodo.status;
 
       // Get all todos in the overTodo's column, sorted by order
-      const todosInOverColumn = todos
+      const lastTodoInColumn = todos
         .filter((t) => t.status === overTodo.status)
-        .sort((a, b) => a.order.localeCompare(b.order));
-
-      const lastTodoInColumn = todosInOverColumn[todosInOverColumn.length - 1];
+        .sort((a, b) => a.order.localeCompare(b.order))
+        .at(-1);
 
       // Condition A: Check if the over item is the very last item in its respective column's list.
       const isOverLastItemInColumn = lastTodoInColumn && overTodo.id === lastTodoInColumn.id;

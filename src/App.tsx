@@ -13,7 +13,10 @@ import { Layout } from "@domain/shared/components/Layout";
 import { CalandarPage } from "@/page/CalendarPage";
 import { LandingPage } from "@/page/LandingPage";
 import { SignUpPage } from "@/page/SignUpPage";
+import { GroupSettingsPage } from "./page/GroupSettingsPage";
 import { GroupTodoPage } from "./page/GroupTodoPage";
+import InvitePage from "./page/InvitationPage";
+import { RoleRoute } from "./route/RoleRoute";
 
 function App() {
   const navigate = useNavigate();
@@ -30,11 +33,15 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/groups" element={<GroupsPage />} />
             <Route path="/calendar" element={<CalandarPage />} />
+            <Route path="/groups/invitation/:token" element={<InvitePage />} />
           </Route>
           <Route path="/groups/:groupId" element={<GroupProvider onNotFound={() => navigate("/groups")} />}>
             <Route element={<GroupRoute />}>
               <Route element={<Layout />}>
                 <Route index element={<GroupTodoPage />} />
+                <Route element={<RoleRoute requiredRole="MANAGER" operater="gte" />}>
+                  <Route path="settings" element={<GroupSettingsPage />} />
+                </Route>
               </Route>
             </Route>
           </Route>

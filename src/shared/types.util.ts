@@ -15,3 +15,5 @@ export type AssertExactExhaustive<TUnion, TArray extends readonly unknown[]> = I
   : never;
 
 export type Nullable<T> = T | null;
+
+export type CompareOperator = "gt" | "gte" | "lt" | "lte" | "eq";

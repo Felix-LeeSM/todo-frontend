@@ -1,10 +1,10 @@
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useGroupMembers } from "@domain/group/hooks/useGroupMembers";
 import { DraggableTodoCard } from "@domain/todo/components/DraggableTodoCard";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import { AlertTriangle, CheckCircle2, Clock, Pause } from "lucide-react";
+import { toSorted } from "@/shared/toSorted";
 
 interface DroppableTodoColumnProps {
   status: TodoStatus;
@@ -19,8 +19,6 @@ export function DroppableTodoColumn({ status, todos }: DroppableTodoColumnProps)
       data: status,
     },
   });
-
-  const { members } = useGroupMembers();
 
   const getColumnInfo = (status: TodoStatus) => {
     switch (status) {
@@ -58,7 +56,9 @@ export function DroppableTodoColumn({ status, todos }: DroppableTodoColumnProps)
   };
 
   const columnInfo = getColumnInfo(status);
-  const sortedTodos = todos.filter((todo) => todo.status === status).sort((a, b) => a.order.localeCompare(b.order));
+
+  // todos를 order 속성을 기준으로 불변하게 정렬합니다.
+  const sortedTodos = toSorted(todos, (a, b) => a.order.localeCompare(b.order));
 
   return (
     <div
@@ -70,17 +70,14 @@ export function DroppableTodoColumn({ status, todos }: DroppableTodoColumnProps)
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-gray-900 flex items-center">
           {columnInfo.icon}
-          {columnInfo.title} ({sortedTodos.length})
+          {columnInfo.title} ({todos.length})
         </h3>
       </div>
-      <div className="space-y-3 min-h-[200px] pb-12">
+      <div className="space-y-3 min-h-60 pb-20">
         <SortableContext items={sortedTodos.map((t) => `todo-${t.id}`)} strategy={verticalListSortingStrategy}>
           {sortedTodos.map((todo) => (
             <div key={todo.id} className={columnInfo.borderColor}>
-              <DraggableTodoCard
-                todo={todo}
-                assignee={todo.assigneeId ? members.find((m) => m.id === todo.assigneeId) : undefined}
-              />
+              <DraggableTodoCard todo={todo} />
             </div>
           ))}
         </SortableContext>

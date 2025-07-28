@@ -1,4 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import TodoCard from "./TodoCard";
 
@@ -16,7 +17,7 @@ export function DraggableTodoCard({ todo }: DraggableTodoCardProps) {
   });
 
   const style = {
-    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };

@@ -1,6 +1,6 @@
 import { GroupInfoContext, GroupMembersContext, GroupTodosContext } from "@domain/group/contexts/GroupContext";
 import { groupApi } from "@domain/group/services/groupApi";
-import type { Group, GroupRole } from "@domain/group/types/Group";
+import type { Group } from "@domain/group/types/Group";
 import type { Member } from "@domain/group/types/Member";
 import { todoApi } from "@domain/todo/services/todoApi";
 import type { CreateTodoParams, UpdateTodoMetadataParams, UpdateTodoRequestDTO } from "@domain/todo/types/dto/todo.dto";
@@ -9,6 +9,9 @@ import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
+import type { UpdateGroupRequestDTO } from "../types/dto/group.dto";
+import type { UpdateMemberRequestDTO } from "../types/dto/member.dto";
+import type { GroupRole } from "../types/GroupRole";
 
 interface GroupProviderProps {
   onNotFound: () => void;
@@ -42,6 +45,52 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
         .catch(toastErrorMessage)
         .finally(() => setIsLoading(false));
     }
+  }, [parsedId]);
+
+  const handleUpdateGroup = useCallback(
+    (data: UpdateGroupRequestDTO) => {
+      if (!parsedId) return Promise.resolve();
+
+      return groupApi
+        .updateGroup(parsedId, data)
+        .then((newGroup) => {
+          console.log(newGroup);
+          setGroup({ ...group, ...newGroup });
+        })
+        .catch(toastErrorMessage);
+    },
+    [parsedId, group],
+  );
+
+  const handleUpdateMember = useCallback(
+    (memberId: number, data: UpdateMemberRequestDTO) => {
+      if (!parsedId) return;
+
+      groupApi
+        .updateMember(parsedId, memberId, data)
+        .then(() => {
+          setMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, role: data.role } : m)));
+        })
+        .catch(toastErrorMessage);
+    },
+    [parsedId],
+  );
+  const handleDeleteMember = useCallback(
+    (memberId: number) => {
+      if (!parsedId) return;
+
+      groupApi
+        .deleteMember(parsedId, memberId)
+        .then(() => {
+          setMembers((prev) => prev.filter((m) => m.id !== memberId));
+        })
+        .catch(toastErrorMessage);
+    },
+    [parsedId],
+  );
+
+  const handleCreateInvitation = useCallback(() => {
+    return groupApi.createGroupInvitation(parsedId);
   }, [parsedId]);
 
   const handleCreateTodo = useCallback(
@@ -141,8 +190,16 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
     [parsedId],
   );
 
-  const infoContextValue = useMemo(() => ({ group, myRole }), [group, myRole]);
-  const membersContextValue = useMemo(() => ({ members }), [members]);
+  const infoContextValue = useMemo(
+    () => ({ group, myRole, updateGroup: handleUpdateGroup, createInvitation: handleCreateInvitation }),
+    [group, myRole, handleUpdateGroup, handleCreateInvitation],
+  );
+
+  const membersContextValue = useMemo(
+    () => ({ members, updateMember: handleUpdateMember, deleteMember: handleDeleteMember }),
+    [members, handleUpdateMember, handleDeleteMember],
+  );
+
   const todosContextValue = useMemo(
     () => ({
       todos,

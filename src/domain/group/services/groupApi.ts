@@ -1,4 +1,4 @@
-import { toDetailedGroup, toFullGroupDetails, toGroup } from "@domain/group/services/mapper";
+import { toDetailedGroup, toFullGroupDetails, toGroup, toInvitaion } from "@domain/group/services/mapper";
 import type {
   CreateGroupInvitationResponseDTO,
   CreateGroupRequestDTO,
@@ -6,9 +6,11 @@ import type {
   FullGroupDetailsResponseDTO,
   GroupInvitationInfoDTOResponse,
   GroupResponseDTO,
+  UpdateGroupRequestDTO,
 } from "@domain/group/types/dto/group.dto";
-import type { DetailedGroup, FullGroupDetails, Group } from "@domain/group/types/Group";
+import type { DetailedGroup, FullGroupDetails, Group, Invitation } from "@domain/group/types/Group";
 import axios from "axios";
+import type { UpdateMemberRequestDTO } from "../types/dto/member.dto";
 
 export const groupApi = {
   getGroups: (): Promise<DetailedGroup[]> => {
@@ -23,14 +25,28 @@ export const groupApi = {
     return axios.delete(`/api/v1/group/${groupId}`).then(() => {});
   },
 
+  updateGroup: (groupId: number, data: UpdateGroupRequestDTO): Promise<Group> => {
+    return axios.put<GroupResponseDTO>(`/api/v1/group/${groupId}`, data).then((res) => toGroup(res.data));
+  },
+
+  updateMember: (groupId: number, memberId: number, data: UpdateMemberRequestDTO): Promise<void> => {
+    return axios.patch<void>(`/api/v1/group/${groupId}/member/${memberId}`, data).then();
+  },
+
+  deleteMember: (groupId: number, memberId: number): Promise<void> => {
+    return axios.delete<void>(`/api/v1/group/${groupId}/member/${memberId}`).then();
+  },
+
   getGroupById: (groupId: number): Promise<FullGroupDetails> => {
     return axios
       .get<FullGroupDetailsResponseDTO>(`/api/v1/group/${groupId}`)
       .then((res) => toFullGroupDetails(res.data));
   },
 
-  createGroupInvitation: (groupId: number): Promise<CreateGroupInvitationResponseDTO> => {
-    return axios.post<CreateGroupInvitationResponseDTO>(`/api/v1/group/${groupId}/invitation`).then((res) => res.data);
+  createGroupInvitation: (groupId: number): Promise<Invitation> => {
+    return axios
+      .post<CreateGroupInvitationResponseDTO>(`/api/v1/group/${groupId}/invitation`)
+      .then((res) => toInvitaion(res.data));
   },
 
   getInvitationInfo: (token: string): Promise<GroupInvitationInfoDTOResponse> => {

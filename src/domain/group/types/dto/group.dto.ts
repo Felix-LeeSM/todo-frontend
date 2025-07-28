@@ -1,7 +1,13 @@
 import type { MemberDTO } from "@domain/group/types/dto/member.dto";
 import type { TodoWithStarredStatusResponseDTO } from "@domain/todo/types/dto/todo.dto";
+import type { GroupRole } from "../GroupRole";
 
 export interface CreateGroupRequestDTO {
+  name: string;
+  description: string;
+}
+
+export interface UpdateGroupRequestDTO {
   name: string;
   description: string;
 }
@@ -39,6 +45,7 @@ export interface CreateGroupInvitationResponseDTO {
 }
 
 export interface GroupInvitationInfoDTOResponse {
+  groupId: number;
   name: string;
   description: string;
   todoCount: number;
@@ -48,5 +55,3 @@ export interface GroupInvitationInfoDTOResponse {
   members: MemberDTO[];
   expiresAt: string;
 }
-
-export type GroupRole = "OWNER" | "MANAGER" | "MEMBER" | "VIEWER";

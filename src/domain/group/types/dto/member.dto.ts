@@ -1,3 +1,5 @@
+import type { GroupRole } from "../GroupRole";
+
 export interface MemberDTO {
   id: number;
   nickname: string;
@@ -5,4 +7,6 @@ export interface MemberDTO {
   role: GroupRole;
 }
 
-export type GroupRole = "OWNER" | "MANAGER" | "MEMBER" | "VIEWER";
+export interface UpdateMemberRequestDTO {
+  role: GroupRole;
+}

@@ -1,5 +1,6 @@
 import type { Member } from "@domain/group/types/Member";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
+import type { GroupRole } from "./GroupRole";
 
 export interface Group {
   id: number;
@@ -22,4 +23,19 @@ export interface DetailedGroup extends GroupDetails {
   completedTodoCount: number;
 }
 
-export type GroupRole = "OWNER" | "MANAGER" | "MEMBER" | "VIEWER";
+export interface Invitation {
+  token: string;
+  expiresAt: Date;
+}
+
+export interface GroupInvitationInfo {
+  groupId: number;
+  name: string;
+  description: string;
+  todoCount: number;
+  completedTodoCount: number;
+  memberCount: number;
+  issuer: Member;
+  members: Member[];
+  expiresAt: string;
+}

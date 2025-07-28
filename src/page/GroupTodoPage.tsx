@@ -9,7 +9,7 @@ import { useTodoFiltering } from "@domain/todo/hooks/useTodoFiltering";
 export function GroupTodoPage() {
   const { group, myRole } = useGroupInfo();
   const { members } = useGroupMembers();
-  const { todos, createTodo } = useGroupTodos();
+  const { todos, createTodo, moveTodo } = useGroupTodos();
 
   const { filterState, filteredTodos, actions } = useTodoFiltering({ todos });
 
@@ -19,7 +19,7 @@ export function GroupTodoPage() {
 
       <TodoFilters filterState={filterState} members={members} actions={actions} />
 
-      <TodoKanbanBoard todos={filteredTodos} />
+      <TodoKanbanBoard todos={filteredTodos} moveTodo={moveTodo} />
     </main>
   );
 }

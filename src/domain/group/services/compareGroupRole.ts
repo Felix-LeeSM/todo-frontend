@@ -1,8 +1,6 @@
-import type { GroupRole } from "../types/Group";
+import type { CompareOperator } from "@/shared/types.util";
+import type { GroupRole } from "../types/GroupRole";
 
-type Operator = "gt" | "gte" | "lt" | "lte" | "eq";
-
-// 각 역할에 대한 순서를 정의합니다.
 const roleHierarchy: Record<GroupRole, number> = {
   OWNER: 4,
   MANAGER: 3,
@@ -10,7 +8,7 @@ const roleHierarchy: Record<GroupRole, number> = {
   VIEWER: 1,
 };
 
-export const compareGroupRole = (role1: GroupRole, operator: Operator, role2: GroupRole): boolean => {
+export const compareGroupRole = (role1: GroupRole, operator: CompareOperator, role2: GroupRole): boolean => {
   const rank1 = roleHierarchy[role1];
   const rank2 = roleHierarchy[role2];
 

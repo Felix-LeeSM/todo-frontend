@@ -1,12 +1,13 @@
 import { CreateTodoDialog } from "@domain/group/components/CreateTodoDialog.tsx";
 import { compareGroupRole } from "@domain/group/services/compareGroupRole";
-import type { Group, GroupRole } from "@domain/group/types/Group";
+import type { Group } from "@domain/group/types/Group";
 import type { Member } from "@domain/group/types/Member";
 import { Avatar, AvatarFallback, AvatarImage } from "@domain/shared/components/ui/avatar";
 import { Button } from "@domain/shared/components/ui/button";
 import type { CreateTodoParams } from "@domain/todo/types/dto/todo.dto";
 import { Settings } from "lucide-react";
 import { Link } from "react-router-dom";
+import type { GroupRole } from "../types/GroupRole";
 
 interface GroupTodoHeaderProps {
   group: Group;

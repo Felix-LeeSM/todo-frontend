@@ -9,13 +9,12 @@ import { mergeClassNames } from "@/shared/mergeClassNames";
 
 export const DueDateSelector = ({ dueDate, onSelect }: { dueDate?: Date | null; onSelect: (date?: Date) => void }) => {
   const [open, setOpen] = useState(false);
-  
 
   const handleSelect = (dueDate?: Date) => {
     if (dueDate) {
-       const timezoneOffsetMs = dueDate.getTimezoneOffset() * 60 * 1000;
-       const adjustedTime = dueDate.getTime() - timezoneOffsetMs;
-       onSelect(new Date(adjustedTime));
+      const timezoneOffsetMs = dueDate.getTimezoneOffset() * 60 * 1000;
+      const adjustedTime = dueDate.getTime() - timezoneOffsetMs;
+      onSelect(new Date(adjustedTime));
     } else {
       onSelect();
     }

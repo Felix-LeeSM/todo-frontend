@@ -1,12 +1,14 @@
 import type {
+  CreateGroupInvitationResponseDTO,
   DetailedGroupResponseDTO,
   FullGroupDetailsResponseDTO,
   GroupResponseDTO,
 } from "@domain/group/types/dto/group.dto";
 import type { MemberDTO } from "@domain/group/types/dto/member.dto";
-import type { DetailedGroup, FullGroupDetails, Group, GroupRole } from "@domain/group/types/Group";
+import type { DetailedGroup, FullGroupDetails, Group, Invitation } from "@domain/group/types/Group";
 import type { Member } from "@domain/group/types/Member";
 import { toTodoWithStarred } from "@domain/todo/services/mapper";
+import type { GroupRole } from "../types/GroupRole";
 
 export const toMember = (memberDto: MemberDTO): Member => ({
   id: memberDto.id,
@@ -15,11 +17,13 @@ export const toMember = (memberDto: MemberDTO): Member => ({
   role: memberDto.role,
 });
 
-export const toGroup = (groupDto: GroupResponseDTO): Group => ({
-  id: groupDto.id,
-  name: groupDto.name,
-  description: groupDto.description,
-});
+export const toGroup = (groupDto: GroupResponseDTO): Group => {
+  return {
+    id: groupDto.id,
+    name: groupDto.name,
+    description: groupDto.description,
+  };
+};
 
 export const toDetailedGroup = (groupDto: DetailedGroupResponseDTO): DetailedGroup => ({
   id: groupDto.id,
@@ -56,3 +60,8 @@ export const toRoleDisplayName = (role: GroupRole) => {
       return "Invalid";
   }
 };
+
+export const toInvitaion = (invitationDTO: CreateGroupInvitationResponseDTO): Invitation => ({
+  token: invitationDTO.token,
+  expiresAt: new Date(invitationDTO.expiresAt),
+});

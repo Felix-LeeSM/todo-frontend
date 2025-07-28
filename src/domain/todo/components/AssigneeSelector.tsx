@@ -35,9 +35,8 @@ export function AssigneeSelector({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
-            variant={"ghost"}
-            size={"default"}
-            role="select"
+            variant="ghost"
+            size="default"
             aria-expanded={open}
             className={mergeClassNames(
               "w-full justify-start text-left font-normal",
@@ -63,13 +62,15 @@ export function AssigneeSelector({
             />
             <CommandList onMouseDown={(e) => e.preventDefault()}>
               <CommandEmpty>사용자를 찾을 수 없습니다.</CommandEmpty>
-              <CommandGroup>
+              <CommandGroup heading="사용자">
                 {members.map((member) => (
                   <CommandItem
                     key={member.id}
                     value={member.nickname}
                     onSelect={() => {
-                      onSelect(member.id);
+                      if (assignee?.id !== member.id) {
+                        onSelect(member.id);
+                      }
                       setOpen(false);
                     }}
                   >

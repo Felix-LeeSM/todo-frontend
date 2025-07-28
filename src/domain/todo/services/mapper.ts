@@ -23,18 +23,19 @@ export const toTodo = (todoDto: TodoResponseDTO): Todo => ({
 
 export const toTodoWithStarred = (todoDto: TodoWithStarredStatusResponseDTO): TodoWithStarred => {
   return {
-  id: todoDto.id,
-  title: todoDto.title,
-  description: todoDto.description,
-  status: todoDto.status,
-  authorId: todoDto.authorId,
-  groupId: todoDto.groupId,
-  order: todoDto.order,
-  dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : undefined,
-  assigneeId: todoDto.assigneeId,
-  important: todoDto.isImportant,
-  isStarred: todoDto.isStarred,
-}};
+    id: todoDto.id,
+    title: todoDto.title,
+    description: todoDto.description,
+    status: todoDto.status,
+    authorId: todoDto.authorId,
+    groupId: todoDto.groupId,
+    order: todoDto.order,
+    dueDate: todoDto.dueDate ? new Date(todoDto.dueDate) : undefined,
+    assigneeId: todoDto.assigneeId,
+    important: todoDto.isImportant,
+    isStarred: todoDto.isStarred,
+  };
+};
 
 export const toCreateTodoRequestDTO = (params: CreateTodoParams): CreateTodoRequestDTO => ({
   title: params.title,
