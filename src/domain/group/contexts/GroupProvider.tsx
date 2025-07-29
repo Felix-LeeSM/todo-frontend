@@ -135,12 +135,13 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
       if (!parsedId) return;
 
       const previousTodos = todos;
-      const expectedResult: Partial<TodoWithStarred> = {
-        assigneeId: params.assigneeId ? params.assigneeId : undefined,
-        dueDate: params.dueDate ? params.dueDate : undefined,
-        important: params.isImportant,
-      };
-      const optimisticTodos = todos.map((t) => (t.id === todoId ? { ...t, ...expectedResult } : t));
+
+      const payload: Partial<TodoWithStarred> = { important: params.isImportant };
+      if (params.assigneeId === null) payload.assigneeId = undefined;
+      if (params.assigneeId) payload.assigneeId = params.assigneeId;
+      if (params.dueDate === null) payload.dueDate = undefined;
+      if (params.dueDate) payload.dueDate = params.dueDate;
+      const optimisticTodos = todos.map((t) => (t.id === todoId ? { ...t, ...payload } : t));
       dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: optimisticTodos });
 
       todoApi

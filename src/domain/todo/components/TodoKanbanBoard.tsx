@@ -1,7 +1,7 @@
-import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import { DroppableTodoColumn } from "@domain/todo/components/DroppableTodoColumn";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import type { TodoStatus, TodoStatusArray } from "@domain/todo/types/TodoStatus";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import { generateOrderedString } from "@/shared/order";
 
 interface TodoKanbanBoardProps {

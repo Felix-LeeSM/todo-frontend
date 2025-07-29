@@ -1,5 +1,5 @@
 import { Button } from "@domain/shared/components/ui/button";
-import { AlertTriangle, GripVertical, Star, Trash2 } from "lucide-react";
+import { AlertTriangle, Star, Trash2 } from "lucide-react";
 import type { TodoWithStarred } from "../types/Todo";
 
 interface TodoHeaderProps {
@@ -11,9 +11,6 @@ interface TodoHeaderProps {
 
 export const TodoHeader = ({ todo, onToggleImportant, onToggleStar, onDelete }: TodoHeaderProps) => (
   <div className="flex items-start gap-2">
-    <div className="flex-shrink-0 mt-0.5">
-      <GripVertical className="w-6 h-6 text-gray-400 cursor-grab hover:text-gray-600" />
-    </div>
     <div className="flex-1 min-w-0">
       <h3 className="font-medium text-md text-gray-900 leading-tight line-clamp-2">{todo.title}</h3>
     </div>

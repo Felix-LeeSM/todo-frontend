@@ -1,7 +1,7 @@
-import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { DraggableTodoCard } from "@domain/todo/components/DraggableTodoCard";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
+import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { AlertTriangle, CheckCircle2, Clock, Pause } from "lucide-react";
 
 interface DroppableTodoColumnProps {
@@ -54,7 +54,9 @@ export function DroppableTodoColumn({ status, todos }: DroppableTodoColumnProps)
           {...provided.droppableProps}
           ref={provided.innerRef}
           className={`space-y-4 p-4 rounded-lg transition-colors ${
-            snapshot.isDraggingOver ? "bg-blue-50 border-2 border-blue-300 border-dashed" : "bg-gray-50 border-2 border-transparent"
+            snapshot.isDraggingOver
+              ? "bg-blue-50 border-2 border-blue-300 border-dashed"
+              : "bg-gray-50 border-2 border-transparent"
           }`}
         >
           <div className="flex items-center justify-between">

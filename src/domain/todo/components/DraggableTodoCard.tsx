@@ -21,10 +21,8 @@ export function DraggableTodoCard({ todo, isDragging }: DraggableTodoCardProps) 
   const toggleImportant = () => updateTodoMetadata(todo.id, { isImportant: !todo.important });
   const selectAssignee = (memberId?: number) => updateTodoMetadata(todo.id, { assigneeId: memberId ?? null });
   const selectDueDate = (dueDate?: Date) => {
-    if (!dueDate) {
-      updateTodoMetadata(todo.id, { dueDate: null });
-      return;
-    }
+    if (!dueDate) return updateTodoMetadata(todo.id, { dueDate: null });
+
     const timezoneOffset = dueDate.getTimezoneOffset() * 60000;
     const adjustedDate = new Date(dueDate.getTime() - timezoneOffset);
     updateTodoMetadata(todo.id, { dueDate: adjustedDate });
@@ -38,7 +36,6 @@ export function DraggableTodoCard({ todo, isDragging }: DraggableTodoCardProps) 
       }`}
     >
       <CardHeader>
-        id는 {todo.id} order는 {todo.order}
         <TodoHeader
           todo={todo}
           onToggleImportant={toggleImportant}
