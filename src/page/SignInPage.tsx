@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
-export function SignInPage() {
+export default function SignInPage() {
   const { handleSignIn } = useContext(AuthContext);
 
   const navigate = useNavigate();

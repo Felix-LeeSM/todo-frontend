@@ -6,7 +6,7 @@ import { ArrowRight, Calendar, CheckCircle, Star, Users } from "lucide-react";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export function LandingPage() {
+export default function LandingPage() {
   const navigate = useNavigate();
   const { handleSignIn } = useContext(AuthContext);
   const showDemo = () => {

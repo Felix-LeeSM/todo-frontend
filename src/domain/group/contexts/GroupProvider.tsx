@@ -3,10 +3,11 @@ import { groupApi } from "@domain/group/services/groupApi";
 import type { Group } from "@domain/group/types/Group";
 import type { Member } from "@domain/group/types/Member";
 import { todoApi } from "@domain/todo/services/todoApi";
+import { todoReducer } from "@domain/todo/state/todoReducer";
 import type { CreateTodoParams, UpdateTodoMetadataParams, UpdateTodoRequestDTO } from "@domain/todo/types/dto/todo.dto";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
 import type { UpdateGroupRequestDTO } from "../types/dto/group.dto";
@@ -23,7 +24,7 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
 
   const [group, setGroup] = useState<Group>();
   const [members, setMembers] = useState<Member[]>([]);
-  const [todos, setTodos] = useState<TodoWithStarred[]>([]);
+  const [todos, dispatch] = useReducer(todoReducer, []);
   const [myRole, setMyRole] = useState<GroupRole>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,7 +40,7 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
         .then(({ members, todos, myRole, ...groupInfo }) => {
           setGroup(groupInfo);
           setMembers(members);
-          setTodos(todos);
+          dispatch({ type: "INITIALIZE_TODOS", payload: todos.sort((a, b) => a.order.localeCompare(b.order)) });
           setMyRole(myRole);
         })
         .catch(toastErrorMessage)
@@ -54,7 +55,6 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
       return groupApi
         .updateGroup(parsedId, data)
         .then((newGroup) => {
-          console.log(newGroup);
           setGroup({ ...group, ...newGroup });
         })
         .catch(toastErrorMessage);
@@ -100,94 +100,147 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
       todoApi
         .createTodo(todo, parsedId)
         .then((newTodo) => {
-          setTodos((prev) => [{ ...newTodo, isStarred: false }, ...prev]);
+          const newTodos = [{ ...newTodo, isStarred: false }, ...todos].sort((a, b) => a.order.localeCompare(b.order));
+          dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: newTodos });
         })
         .catch(toastErrorMessage);
     },
-    [parsedId],
+    [parsedId, todos],
   );
 
   const handleUpdateTodoDetails = useCallback(
     (todoId: number, updates: UpdateTodoRequestDTO) => {
       if (!parsedId) return;
 
+      const previousTodos = todos;
+      const optimisticTodos = todos.map((t) => (t.id === todoId ? { ...t, ...updates } : t));
+      dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: optimisticTodos });
+
       todoApi
         .updateTodo(parsedId, todoId, updates)
-        .then((updatedTodo) => {
-          setTodos((prev) => prev.map((t) => (t.id === todoId ? { ...t, ...updatedTodo } : t)));
+        .then((_updatedTodo) => {
+          // The optimistic update already applied, no need to update again unless there's a discrepancy
+          // For now, we'll assume the optimistic update is correct.
         })
-        .catch(toastErrorMessage);
+        .catch((error) => {
+          dispatch({ type: "REVERT_STATE", payload: previousTodos });
+          toastErrorMessage(error);
+        });
     },
-    [parsedId],
+    [parsedId, todos],
   );
 
   const handleUpdateTodoMetadata = useCallback(
     (todoId: number, params: UpdateTodoMetadataParams) => {
       if (!parsedId) return;
 
+      const previousTodos = todos;
+      const expectedResult: Partial<TodoWithStarred> = {
+        assigneeId: params.assigneeId ? params.assigneeId : undefined,
+        dueDate: params.dueDate ? params.dueDate : undefined,
+        important: params.isImportant,
+      };
+      const optimisticTodos = todos.map((t) => (t.id === todoId ? { ...t, ...expectedResult } : t));
+      dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: optimisticTodos });
+
       todoApi
         .updateMetadata(parsedId, todoId, params)
-        .then((updatedTodo) => {
-          setTodos((prev) => prev.map((t) => (t.id === todoId ? { ...t, ...updatedTodo } : t)));
+        .then((_updatedTodo) => {
+          // The optimistic update already applied, no need to update again unless there's a discrepancy
         })
-        .catch(toastErrorMessage);
+        .catch((error) => {
+          dispatch({ type: "REVERT_STATE", payload: previousTodos });
+          toastErrorMessage(error);
+        });
     },
-    [parsedId],
+    [parsedId, todos],
   );
 
   const handleStarTodo = useCallback(
     (todoId: number) => {
       if (!parsedId) return;
 
+      const previousTodos = todos;
+      const optimisticTodos = todos.map((t) => (t.id === todoId ? { ...t, isStarred: true } : t));
+      dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: optimisticTodos });
+
       todoApi
         .starTodo(parsedId, todoId)
         .then(() => {
-          setTodos((prev) => prev.map((t) => (t.id === todoId ? { ...t, isStarred: true } : t)));
+          // Optimistic update already applied
         })
-        .catch(toastErrorMessage);
+        .catch((error) => {
+          dispatch({ type: "REVERT_STATE", payload: previousTodos });
+          toastErrorMessage(error);
+        });
     },
-    [parsedId],
+    [parsedId, todos],
   );
 
   const handleUnstarTodo = useCallback(
     (todoId: number) => {
       if (!parsedId) return;
 
+      const previousTodos = todos;
+      const optimisticTodos = todos.map((t) => (t.id === todoId ? { ...t, isStarred: false } : t));
+      dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: optimisticTodos });
+
       todoApi
         .unstarTodo(parsedId, todoId)
         .then(() => {
-          setTodos((prev) => prev.map((t) => (t.id === todoId ? { ...t, isStarred: false } : t)));
+          // Optimistic update already applied
         })
-        .catch(toastErrorMessage);
+        .catch((error) => {
+          dispatch({ type: "REVERT_STATE", payload: previousTodos });
+          toastErrorMessage(error);
+        });
     },
-    [parsedId],
+    [parsedId, todos],
   );
 
   const handleMoveTodo = useCallback(
     (todoId: number, newStatus: TodoStatus, order: string) => {
       if (!parsedId) return;
 
+      const previousTodos = todos;
+      const optimisticTodos = todos
+        .map((t) => (t.id === todoId ? { ...t, status: newStatus, order: order } : t))
+        .sort((a, b) => a.order.localeCompare(b.order));
+      dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: optimisticTodos });
+
       todoApi
         .moveTodo(parsedId, todoId, { todoStatus: newStatus, order: order })
-        .then((movedTodo) => {
-          setTodos((prev) => prev.map((t) => (t.id === todoId ? { ...t, ...movedTodo } : t)));
+        .then((_movedTodo) => {
+          // The optimistic update already applied, no need to update again unless there's a discrepancy
+          // For now, we'll assume the optimistic update is correct.
         })
-        .catch(toastErrorMessage);
+        .catch((error) => {
+          dispatch({ type: "REVERT_STATE", payload: previousTodos });
+          toastErrorMessage(error);
+        });
     },
-    [parsedId],
+    [parsedId, todos],
   );
 
   const handleDeleteTodo = useCallback(
     (todoId: number) => {
       if (!parsedId) return;
+
+      const previousTodos = todos;
+      const optimisticTodos = todos.filter((t) => t.id !== todoId);
+      dispatch({ type: "APPLY_OPTIMISTIC_UPDATE", payload: optimisticTodos });
+
       todoApi
         .deleteTodo(parsedId, todoId)
         .then(() => {
-          setTodos((prev) => prev.filter((t) => t.id !== todoId));
+          // Optimistic update already applied
         })
-        .catch(toastErrorMessage);
+        .catch((error) => {
+          dispatch({ type: "REVERT_STATE", payload: previousTodos });
+          toastErrorMessage(error);
+        });
     },
-    [parsedId],
+    [parsedId, todos],
   );
 
   const infoContextValue = useMemo(

@@ -17,7 +17,7 @@ import { Plus, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
-export function GroupsPage() {
+export default function GroupsPage() {
   const { user } = useAuth();
   const [groups, setGroups] = useState<DetailedGroup[]>([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -6,7 +6,7 @@ import { TodoFilters } from "@domain/todo/components/TodoFilters";
 import { TodoKanbanBoard } from "@domain/todo/components/TodoKanbanBoard";
 import { useTodoFiltering } from "@domain/todo/hooks/useTodoFiltering";
 
-export function GroupTodoPage() {
+export default function GroupTodoPage() {
   const { group, myRole } = useGroupInfo();
   const { members } = useGroupMembers();
   const { todos, createTodo, moveTodo } = useGroupTodos();

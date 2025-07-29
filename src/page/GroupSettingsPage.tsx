@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@domain/shared/compone
 import { InvitationLinkGenerator } from "@domain/todo/components/InvitationLinkGenerator";
 import { MembersEditor } from "@domain/todo/components/MembersEditor";
 
-export function GroupSettingsPage() {
+export default function GroupSettingsPage() {
   const { group, myRole, updateGroup, createInvitation } = useGroupInfo();
   const { members, updateMember, deleteMember } = useGroupMembers();
 

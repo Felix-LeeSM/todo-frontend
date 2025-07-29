@@ -5,7 +5,7 @@ import { CheckCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
-export function SignUpPage() {
+export default function SignUpPage() {
   const navigate = useNavigate();
 
   const handleSubmit = async (formData: SignUpFormData) => {

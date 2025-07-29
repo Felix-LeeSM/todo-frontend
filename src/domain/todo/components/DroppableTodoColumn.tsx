@@ -1,10 +1,8 @@
-import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { DraggableTodoCard } from "@domain/todo/components/DraggableTodoCard";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import type { TodoStatus } from "@domain/todo/types/TodoStatus";
 import { AlertTriangle, CheckCircle2, Clock, Pause } from "lucide-react";
-import { toSorted } from "@/shared/toSorted";
 
 interface DroppableTodoColumnProps {
   status: TodoStatus;
@@ -12,14 +10,6 @@ interface DroppableTodoColumnProps {
 }
 
 export function DroppableTodoColumn({ status, todos }: DroppableTodoColumnProps) {
-  const { isOver, setNodeRef } = useDroppable({
-    id: `column-${status}` as `column-${number}`,
-    data: {
-      type: "TODO_COLUMN",
-      data: status,
-    },
-  });
-
   const getColumnInfo = (status: TodoStatus) => {
     switch (status) {
       case "TO_DO":
@@ -57,31 +47,41 @@ export function DroppableTodoColumn({ status, todos }: DroppableTodoColumnProps)
 
   const columnInfo = getColumnInfo(status);
 
-  // todos를 order 속성을 기준으로 불변하게 정렬합니다.
-  const sortedTodos = toSorted(todos, (a, b) => a.order.localeCompare(b.order));
-
   return (
-    <div
-      ref={setNodeRef}
-      className={`space-y-4 p-4 rounded-lg transition-colors ${
-        isOver ? "bg-blue-50 border-2 border-blue-300 border-dashed" : "bg-gray-50 border-2 border-transparent"
-      }`}
-    >
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900 flex items-center">
-          {columnInfo.icon}
-          {columnInfo.title} ({todos.length})
-        </h3>
-      </div>
-      <div className="space-y-3 min-h-60 pb-20">
-        <SortableContext items={sortedTodos.map((t) => `todo-${t.id}`)} strategy={verticalListSortingStrategy}>
-          {sortedTodos.map((todo) => (
-            <div key={todo.id} className={columnInfo.borderColor}>
-              <DraggableTodoCard todo={todo} />
-            </div>
-          ))}
-        </SortableContext>
-      </div>
-    </div>
+    <Droppable droppableId={`column-${status}`}>
+      {(provided, snapshot) => (
+        <div
+          {...provided.droppableProps}
+          ref={provided.innerRef}
+          className={`space-y-4 p-4 rounded-lg transition-colors ${
+            snapshot.isDraggingOver ? "bg-blue-50 border-2 border-blue-300 border-dashed" : "bg-gray-50 border-2 border-transparent"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900 flex items-center">
+              {columnInfo.icon}
+              {columnInfo.title} ({todos.length})
+            </h3>
+          </div>
+          <div className="space-y-3 min-h-60 pb-20">
+            {todos.map((todo, index) => (
+              <Draggable key={todo.id} draggableId={`todo-${todo.id}`} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className={columnInfo.borderColor}
+                  >
+                    <DraggableTodoCard todo={todo} isDragging={snapshot.isDragging} />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        </div>
+      )}
+    </Droppable>
   );
 }

@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
-export default function InvitePage() {
+export default function InvitationPage() {
   const { token = "" } = useParams<{ token: string }>();
   const navigate = useNavigate();
 
@@ -29,7 +29,6 @@ export default function InvitePage() {
         setGroupInfo(info);
       })
       .catch((e) => {
-        console.log(e);
         toastErrorMessage(e);
         setError(e?.message || "알 수 없는 오류가 발생했습니다.");
       })

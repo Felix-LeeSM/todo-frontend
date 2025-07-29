@@ -1,28 +1,17 @@
 import { Button } from "@domain/shared/components/ui/button";
 import { AlertTriangle, GripVertical, Star, Trash2 } from "lucide-react";
 import type { TodoWithStarred } from "../types/Todo";
-import { DraggableSyntheticListeners } from "@dnd-kit/core";
-import { HTMLAttributes } from "react";
 
 interface TodoHeaderProps {
   todo: TodoWithStarred;
   onToggleImportant: () => void;
   onToggleStar: () => void;
   onDelete: () => void;
-  dragListeners?: DraggableSyntheticListeners;
-  dragAttributes: HTMLAttributes<HTMLElement>;
 }
 
-export const TodoHeader = ({
-  todo,
-  onToggleImportant,
-  onToggleStar,
-  onDelete,
-  dragListeners,
-  dragAttributes
-}: TodoHeaderProps) => (
+export const TodoHeader = ({ todo, onToggleImportant, onToggleStar, onDelete }: TodoHeaderProps) => (
   <div className="flex items-start gap-2">
-    <div className="flex-shrink-0 mt-0.5" {...dragListeners} {...dragAttributes}>
+    <div className="flex-shrink-0 mt-0.5">
       <GripVertical className="w-6 h-6 text-gray-400 cursor-grab hover:text-gray-600" />
     </div>
     <div className="flex-1 min-w-0">

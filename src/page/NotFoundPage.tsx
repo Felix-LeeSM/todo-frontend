@@ -4,7 +4,7 @@ import { ArrowLeft, CheckCircle, Home } from "lucide-react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 
-export function NotFoundPage() {
+export default function NotFoundPage() {
   const { user } = useContext(AuthContext);
 
   return (

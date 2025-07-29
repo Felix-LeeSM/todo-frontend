@@ -1,5 +1,3 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { useGroupMembers } from "@domain/group/hooks/useGroupMembers";
 import { useGroupTodos } from "@domain/group/hooks/useGroupTodos";
 import { Card, CardContent, CardHeader } from "@domain/shared/components/ui/card";
@@ -11,23 +9,10 @@ import { TodoHeader } from "./TodoHeader";
 
 interface DraggableTodoCardProps {
   todo: TodoWithStarred;
+  isDragging: boolean;
 }
 
-export function DraggableTodoCard({ todo }: DraggableTodoCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: `todo-${todo.id}`,
-    data: {
-      type: "TODO_ITEM",
-      data: todo,
-    },
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
+export function DraggableTodoCard({ todo, isDragging }: DraggableTodoCardProps) {
   const { updateTodoMetadata, starTodo, unstarTodo, deleteTodo } = useGroupTodos();
   const { members } = useGroupMembers();
   const assignee = members.find((m) => m.id === todo.assigneeId);
@@ -46,29 +31,31 @@ export function DraggableTodoCard({ todo }: DraggableTodoCardProps) {
   };
 
   return (
-    <div ref={setNodeRef} style={style}>
-      <Card key={todo.id} className="border border-gray-200 hover:shadow-md transition-shadow duration-200 h-fit">
-        <CardHeader>
-          <TodoHeader
-            todo={todo}
-            onToggleImportant={toggleImportant}
-            onToggleStar={toggleStar}
-            onDelete={() => deleteTodo(todo.id)}
-            dragListeners={listeners}
-            dragAttributes={attributes}
-          />
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {todo.description && <TodoDescription description={todo.description} />}
+    <Card
+      key={todo.id}
+      className={`border border-gray-200 hover:shadow-md transition-shadow duration-200 h-fit ${
+        isDragging ? "opacity-50" : ""
+      }`}
+    >
+      <CardHeader>
+        id는 {todo.id} order는 {todo.order}
+        <TodoHeader
+          todo={todo}
+          onToggleImportant={toggleImportant}
+          onToggleStar={toggleStar}
+          onDelete={() => deleteTodo(todo.id)}
+        />
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {todo.description && <TodoDescription description={todo.description} />}
 
-            <div className="space-y-2">
-              <DueDateSelector dueDate={todo.dueDate} onSelect={selectDueDate} />
-              <AssigneeSelector assignee={assignee} members={members} onSelect={selectAssignee} />
-            </div>
+          <div className="space-y-2">
+            <DueDateSelector dueDate={todo.dueDate} onSelect={selectDueDate} />
+            <AssigneeSelector assignee={assignee} members={members} onSelect={selectAssignee} />
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
