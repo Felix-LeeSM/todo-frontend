@@ -30,7 +30,7 @@ export interface GroupTodosContextType {
   updateTodoMetadata?: (todoId: number, params: UpdateTodoMetadataParams) => void;
   starTodo?: (todoId: number) => void;
   unstarTodo?: (todoId: number) => void;
-  moveTodo?: (todoId: number, newStatus: TodoStatus, destinationId?: number) => void;
+  moveTodo?: (todoId: number, newStatus: TodoStatus, order: string) => void;
   deleteTodo?: (todoId: number) => void;
 }
 export const GroupTodosContext = createContext<GroupTodosContextType>({});

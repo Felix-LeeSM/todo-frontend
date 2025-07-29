@@ -21,7 +21,7 @@ export interface UpdateTodoRequestDTO {
 }
 
 export interface MoveTodoRequestDTO {
-  destinationId?: number;
+  order: string;
   todoStatus: TodoStatus;
 }
 

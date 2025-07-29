@@ -64,7 +64,7 @@ export function MembersEditor({ members, myRole, onUpdateMember, onDeleteMember 
           {members.map((member) => (
             <div
               key={member.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border rounded-lg"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-gray-200 rounded-xl"
             >
               <div className="flex items-center space-x-3">
                 <Avatar>

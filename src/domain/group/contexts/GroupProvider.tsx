@@ -164,11 +164,11 @@ export const GroupProvider = ({ onNotFound }: GroupProviderProps) => {
   );
 
   const handleMoveTodo = useCallback(
-    (todoId: number, newStatus: TodoStatus, destinationId?: number) => {
+    (todoId: number, newStatus: TodoStatus, order: string) => {
       if (!parsedId) return;
 
       todoApi
-        .moveTodo(parsedId, todoId, { todoStatus: newStatus, destinationId: destinationId })
+        .moveTodo(parsedId, todoId, { todoStatus: newStatus, order: order })
         .then((movedTodo) => {
           setTodos((prev) => prev.map((t) => (t.id === todoId ? { ...t, ...movedTodo } : t)));
         })

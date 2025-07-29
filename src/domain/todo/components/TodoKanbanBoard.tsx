@@ -16,6 +16,7 @@ import { DroppableTodoColumn } from "@domain/todo/components/DroppableTodoColumn
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import type { TodoStatus, TodoStatusArray } from "@domain/todo/types/TodoStatus";
 import { useState } from "react";
+import { generateOrderedString } from "@/shared/order";
 
 type DragData = { type: "TODO_ITEM"; data: TodoWithStarred } | { type: "TODO_COLUMN"; data: TodoStatus };
 
@@ -48,7 +49,7 @@ type DragData = { type: "TODO_ITEM"; data: TodoWithStarred } | { type: "TODO_COL
 
 interface TodoKanbanBoardProps {
   todos: TodoWithStarred[];
-  moveTodo: (todoId: number, newStatus: TodoStatus, destinationId?: number) => void;
+  moveTodo: (todoId: number, newStatus: TodoStatus, order: string) => void;
 }
 
 export function TodoKanbanBoard({ todos, moveTodo }: TodoKanbanBoardProps) {
@@ -74,24 +75,7 @@ export function TodoKanbanBoard({ todos, moveTodo }: TodoKanbanBoardProps) {
   };
 
   const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeId = active.id;
-    const overId = over.id;
-
-    if (activeId === overId) return;
-
-    const isActiveATodo = (active.data.current as DragData)?.type === "TODO_ITEM";
-    const isOverAColumn = (over.data.current as DragData)?.type === "TODO_COLUMN";
-
-    if (isActiveATodo && isOverAColumn) {
-      const todoToMove = (active.data.current as DragData).data as TodoWithStarred;
-      const newStatus = (over.data.current as DragData).data as TodoStatus;
-      if (todoToMove && todoToMove.status !== newStatus) {
-        // Optimistic update will handle this state change
-      }
-    }
+    // Optimistic Update를 위한 로직 (필요시 구현)
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -100,58 +84,58 @@ export function TodoKanbanBoard({ todos, moveTodo }: TodoKanbanBoardProps) {
     if (!over || active.id === over.id) return;
 
     const activeDragData = active.data.current as DragData;
-    const overDragData = over.data.current as DragData;
-
     if (activeDragData.type !== "TODO_ITEM") {
       return;
     }
 
     const todoToMove = activeDragData.data;
+    const overData = over.data.current as DragData;
 
-    let newStatus: TodoStatus;
-    let destinationId: number | undefined;
+    // 1. 새로운 상태(컬럼) 결정
+    const newStatus: TodoStatus =
+      overData.type === "TODO_COLUMN" ? overData.data : (overData.data as TodoWithStarred).status;
 
-    if (overDragData.type === "TODO_COLUMN") {
-      newStatus = overDragData.data;
-      // Dropped directly onto a column, implies end of list or empty column.
-      // destinationId remains undefined.
-    } else if (overDragData.type === "TODO_ITEM") {
-      const overTodo = overDragData.data;
-      newStatus = overTodo.status;
+    // 2. 이동할 컬럼의 todo들을 order 기준으로 정렬 (현재 이동 중인 아이템 제외)
+    const sortedTodosInColumn = todos
+      .filter((t) => t.status === newStatus && t.id !== todoToMove.id)
+      .sort((a, b) => a.order.localeCompare(b.order));
 
-      // Get all todos in the overTodo's column, sorted by order
-      const lastTodoInColumn = todos
-        .filter((t) => t.status === overTodo.status)
-        .sort((a, b) => a.order.localeCompare(b.order))
-        .at(-1);
+    let newOrder: string;
 
-      // Condition A: Check if the over item is the very last item in its respective column's list.
-      const isOverLastItemInColumn = lastTodoInColumn && overTodo.id === lastTodoInColumn.id;
+    if (overData.type === "TODO_COLUMN") {
+      const rightTodo = sortedTodosInColumn.at(0); // 컬럼의 첫 번째 아이템
+      newOrder = generateOrderedString(undefined, rightTodo?.order);
+    } else if (overData.type === "TODO_ITEM") {
+      const overTodo = overData.data;
 
-      // Condition B: Check the drop position relative to that last item.
-      // Determine if the drop occurred in the bottom half of that last item.
+      // 드롭된 아이템의 절반 위/아래 중 어디에 위치하는지 판단
       const overRect = event.over?.rect;
-      const activeRect = event.active?.rect.current?.translated; // Use translated for current visual position
-
+      const activeRect = event.active?.rect.current?.translated;
       let droppedInBottomHalf = false;
       if (overRect && activeRect) {
         const overMidpointY = overRect.top + overRect.height / 2;
-        // If the top of the dragged item is below the midpoint of the over item, it's in the bottom half.
         droppedInBottomHalf = activeRect.top > overMidpointY;
       }
 
-      if (isOverLastItemInColumn && droppedInBottomHalf) {
-        destinationId = undefined; // Drop at the very end of the list
+      const overIndex = sortedTodosInColumn.findIndex((t) => t.id === overTodo.id);
+
+      if (droppedInBottomHalf) {
+        const leftTodo = sortedTodosInColumn[overIndex];
+        const rightTodo = sortedTodosInColumn[overIndex + 1];
+        newOrder = generateOrderedString(leftTodo.order, rightTodo?.order);
       } else {
-        destinationId = overTodo.id; // Drop onto an existing todo item
+        const leftTodo = sortedTodosInColumn[overIndex - 1];
+        const rightTodo = sortedTodosInColumn[overIndex];
+        newOrder = generateOrderedString(leftTodo?.order, rightTodo.order);
       }
     } else {
-      return;
+      return; // 그 외의 경우는 무시
     }
 
+    if (todoToMove.status === newStatus && todoToMove.order === newOrder) return;
+
+    moveTodo(todoToMove.id, newStatus, newOrder);
     // TODO: Optimistic Update - Reducer Action: 'MOVE_SUCCESS'. Dispatch this on API success. The reducer should have already handled the optimistic state change. This action confirms the state or updates it with fresh data from the server.
-    moveTodo(todoToMove.id, newStatus, destinationId);
-    // TODO: Optimistic Update - Reducer Action: 'MOVE_FAILURE'. Dispatch this on API failure. The reducer should receive the original state as part of the action payload to revert the UI to its pre-drag state (rollback).
   };
 
   const todoStatuses: TodoStatusArray = ["TO_DO", "IN_PROGRESS", "ON_HOLD", "DONE"];
