@@ -1,4 +1,4 @@
-import type { DetailedGroup } from "@domain/group/types/Group";
+import type { FullGroupDetails } from "@domain/group/types/Group";
 import { Badge } from "@domain/shared/components/ui/badge";
 import { Button } from "@domain/shared/components/ui/button";
 import { CardTitle } from "@domain/shared/components/ui/card";
@@ -8,7 +8,7 @@ import { ko } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CalendarHeaderProps {
-  groups: DetailedGroup[];
+  groups: FullGroupDetails[];
   now: Date;
   actions: {
     onMyTodosOnlyChange: (showMine: boolean) => void;

@@ -7,6 +7,7 @@ import type {
   UpdateTodoMetadataRequestDTO,
 } from "@domain/todo/types/dto/todo.dto";
 import type { Todo, TodoWithStarred } from "@domain/todo/types/Todo";
+import { format } from "date-fns";
 
 export const toTodo = (todoDto: TodoResponseDTO): Todo => ({
   id: todoDto.id,
@@ -57,6 +58,5 @@ export function toDateString(date?: Date): string | undefined;
 export function toDateString(date?: Date): string | undefined {
   if (!date) return undefined;
 
-  // YYYY-MM-DD 으로 변환
-  return date.toISOString().split("T")[0];
+  return format(date, "yyyy-MM-dd");
 }

@@ -1,6 +1,7 @@
+import type { FullGroupDetails } from "@domain/group/types/Group";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import { isSameMonth } from "date-fns";
-import { type Map as ImmutableMap, Set as ImmutableSet } from "immutable";
+import { Set as ImmutableSet } from "immutable";
 import { useMemo, useReducer } from "react";
 
 interface FilterState {
@@ -48,15 +49,7 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
   }
 }
 
-export function useGroupTodoFiltering({
-  groupTodos,
-  myId,
-  now,
-}: {
-  groupTodos: ImmutableMap<number, TodoWithStarred[]>;
-  myId: number;
-  now: Date;
-}): {
+export function useGroupTodoFiltering({ groups, myId, now }: { groups: FullGroupDetails[]; myId: number; now: Date }): {
   actions: {
     onMyTodosOnlyChange: (showMine: boolean) => void;
     onImportantOnlyChange: (showImportant: boolean) => void;
@@ -73,15 +66,14 @@ export function useGroupTodoFiltering({
 
   const filteredTodos = useMemo(
     () =>
-      groupTodos
-        .toArray()
-        .filter(([id, _todos]) => state.groupIdsFilter.has(id))
-        .flatMap(([_id, todos]) => todos)
+      groups
+        .filter(({ id }) => state.groupIdsFilter.has(id))
+        .flatMap(({ todos }) => todos)
         .filter((todo) => !state.showMyTodos || todo.assigneeId === myId)
         .filter((todo) => !state.showStarredOnly || todo.isStarred)
         .filter((todo) => !state.showImportantOnly || todo.important)
         .filter((todo) => todo.dueDate && isSameMonth(todo.dueDate, state.selectedMonth)),
-    [myId, groupTodos, state],
+    [myId, groups, state],
   );
 
   const actions = useMemo(
