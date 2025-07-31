@@ -1,83 +1,142 @@
 import { AuthContext } from "@domain/auth/contexts/AuthContext";
 import { authApi } from "@domain/auth/services/authApi";
 import { Button } from "@domain/shared/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@domain/shared/components/ui/card";
-import { ArrowRight, Calendar, CheckCircle, Star, Users } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@domain/shared/components/ui/card";
+import {
+  ArrowRight,
+  Calendar,
+  CheckCircle,
+  Star,
+  Users,
+} from "lucide-react";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { handleSignIn } = useContext(AuthContext);
+  const { handleSignIn, handleLogOut, user } = useContext(AuthContext);
+
   const showDemo = () => {
-    authApi.signIn({ username: "felix", password: "1q2w3e4r!!" }).then((user) => {
-      handleSignIn(user);
-      navigate("/groups");
-    });
+    authApi
+      .signIn({ username: "felix", password: "1q2w3e4r!!" })
+      .then((user) => {
+        handleSignIn(user);
+        navigate("/groups");
+      });
   };
+
+  const onSignOut = () => {
+    handleLogOut();
+    navigate("/");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    // 수정 1: flex-col을 추가하여 자식 요소들이 수직으로 쌓이도록 하고, 전체를 flex 컨테이너로 만든다.
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
             <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600" />
-            <span className="text-xl lg:text-2xl font-bold text-gray-900">TodoFlow</span>
+            <span className="text-xl lg:text-2xl font-bold text-gray-900">
+              TodoFlow
+            </span>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" asChild>
-              <Link to="/signin">로그인</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/signup">시작하기</Link>
-            </Button>
+          {/* 수정 2: 버튼 그룹 컨테이너에 최소 너비와 정렬을 지정하여 로고의 위치를 고정한다. */}
+          <div className="flex items-center justify-end space-x-4 sm:min-w-[260px]">
+            {user ? (
+              <>
+                <Button variant="outline" asChild>
+                  <Link to="/groups">그룹 가기</Link>
+                </Button>
+                <Button variant="ghost" onClick={onSignOut}>
+                  로그아웃
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/signin">로그인</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/signup">시작하기</Link>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-12 lg:py-20 text-center">
-        <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
-          팀과 함께하는 <span className="text-blue-600">스마트한</span> 할일 관리
-        </h1>
-        <p className="text-lg lg:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          드래그 앤 드롭, 달력 뷰, 그룹 협업까지. 모든 할일을 한 곳에서 효율적으로 관리하세요.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" asChild>
-            <Link to="/signup">
-              무료로 시작하기 <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <button
-              type="button"
-              className="cursor-pointer"
-              onClick={() => {
-                showDemo();
-              }}
-            >
-              데모 보기
-            </button>
-          </Button>
-        </div>
-      </section>
+      {/* 수정 1: main 태그로 감싸고 flex-grow를 적용하여 남는 공간을 모두 차지하게 한다. */}
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 py-12 lg:py-20 text-center">
+          {user ? (
+            <>
+              <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
+                <span className="text-blue-600">{user.username}</span>님,
+                환영합니다.
+              </h1>
+              {/* 수정 3: p 태그에 최소 높이를 지정하여 아래 버튼의 위치를 고정한다. text-lg의 line-height가 1.75rem (28px)이므로, 2줄 분량인 56px(3.5rem)을 min-h-14로 설정. */}
+              <p className="text-lg lg:text-xl text-gray-600 mb-8 max-w-2xl mx-auto min-h-[56px] flex items-center justify-center">
+                오늘의 할 일을 확인하고 팀과 함께 작업을 시작하세요.
+              </p>
+              <Button size="lg" asChild>
+                <Link to="/groups">
+                  내 그룹으로 이동 <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </>
+          ) : (
+            <>
+              <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
+                팀과 함께하는 <span className="text-blue-600">스마트한</span>{" "}
+                할일 관리
+              </h1>
+              {/* 수정 3: 동일한 최소 높이를 적용하여 상태 변경 시 레이아웃 쉬프트가 없도록 보장한다. */}
+              <p className="text-lg lg:text-xl text-gray-600 mb-8 max-w-2xl mx-auto min-h-[56px] flex items-center justify-center">
+                드래그 앤 드롭, 달력 뷰, 그룹 협업까지. 모든 할일을 한 곳에서
+                효율적으로 관리하세요.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button size="lg" asChild>
+                  <Link to="/signup">
+                    무료로 시작하기 <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" onClick={showDemo}>
+                  데모 보기
+                </Button>
+              </div>
+            </>
+          )}
+        </section>
 
-      {/* Features */}
-      <section className="container mx-auto px-4 py-12 lg:py-20">
-        <h2 className="text-2xl lg:text-3xl font-bold text-center text-gray-900 mb-12">강력한 기능들</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          <Card>
-            <CardHeader>
-              <CheckCircle className="h-8 w-8 text-blue-600 mb-2" />
-              <CardTitle>드래그 앤 드롭</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>직관적인 드래그 앤 드롭으로 할일의 상태를 쉽게 변경하세요.</CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card>
+        {/* Features */}
+        <section className="container mx-auto px-4 py-12 lg:py-20">
+          <h2 className="text-2xl lg:text-3xl font-bold text-center text-gray-900 mb-12">
+            강력한 기능들
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <Card>
+              <CardHeader>
+                <CheckCircle className="h-8 w-8 text-blue-600 mb-2" />
+                <CardTitle>드래그 앤 드롭</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  직관적인 드래그 앤 드롭으로 할일의 상태를 쉽게 변경하세요.
+                </CardDescription>
+              </CardContent>
+            </Card>
+            {/* ... Other cards ... */}
+            <Card>
             <CardHeader>
               <Calendar className="h-8 w-8 text-green-600 mb-2" />
               <CardTitle>달력 뷰</CardTitle>
@@ -106,23 +165,28 @@ export default function LandingPage() {
               <CardDescription>중요한 할일에 별표를 표시하고 우선순위를 관리하세요.</CardDescription>
             </CardContent>
           </Card>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* CTA Section */}
-      <section className="bg-blue-600 text-white py-12 lg:py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl lg:text-3xl font-bold mb-4">지금 바로 시작해보세요</h2>
-          <p className="text-lg lg:text-xl mb-8 opacity-90">
-            무료로 계정을 만들고 팀과 함께 효율적인 할일 관리를 경험하세요.
-          </p>
-          <Button size="lg" variant="secondary" asChild>
-            <Link to="/signup">
-              무료 계정 만들기 <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </section>
+        {/* CTA Section */}
+        {!user && (
+          <section className="bg-blue-600 text-white py-12 lg:py-20">
+            <div className="container mx-auto px-4 text-center">
+              <h2 className="text-2xl lg:text-3xl font-bold mb-4">
+                지금 바로 시작해보세요
+              </h2>
+              <p className="text-lg lg:text-xl mb-8 opacity-90">
+                무료로 계정을 만들고 팀과 함께 효율적인 할일 관리를 경험하세요.
+              </p>
+              <Button size="lg" variant="secondary" asChild>
+                <Link to="/signup">
+                  무료 계정 만들기 <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </section>
+        )}
+      </main>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
@@ -131,7 +195,9 @@ export default function LandingPage() {
             <CheckCircle className="h-6 w-6" />
             <span className="text-xl font-bold">TodoFlow</span>
           </div>
-          <p className="text-gray-400">© 2024 TodoFlow. All rights reserved.</p>
+          <p className="text-gray-400">
+            © 2025 TodoFlow. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
