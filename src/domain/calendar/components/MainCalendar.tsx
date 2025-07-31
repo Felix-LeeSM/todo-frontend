@@ -69,7 +69,7 @@ export function MainCalendar({ selectedDate, selectedMonth, onSelectDate, todos,
               disabled={!isCurrentMonth}
               aria-label={`${format(day, "M월 d일")}, ${dayTodos.length}개의 할 일`}
               className={mergeClassNames(
-                "min-h-20 rounded-lg border p-1 text-left lg:min-h-25 lg:p-2",
+                "min-h-20 rounded-lg border p-1 text-left lg:min-h-25 lg:p-2 flex flex-col justify-start",
                 "transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2",
 
                 {
