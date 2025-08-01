@@ -116,7 +116,6 @@ export default function CalandarPage() {
               <CalendarFilters groups={groups} actions={actions} filterState={filterState} now={now} />
             </CardHeader>
             <CardContent>
-              {/* Calendar Grid를 반응형으로 수정 */}
               <MainCalendar
                 todos={filteredTodos}
                 onSelectDate={(date) => setSelectedDate(date)}

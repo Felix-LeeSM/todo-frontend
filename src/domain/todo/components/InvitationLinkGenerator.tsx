@@ -49,7 +49,6 @@ export function InvitationLinkGenerator({ onCreateInvitation }: InvitationLinkGe
         <CardContent className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
             <Input value={invitationUrl} readOnly placeholder="새 링크를 생성해주세요." className="flex-1" />
-            {/* [4] 링크가 없을 때 복사 버튼을 비활성화하여 UX를 개선합니다. */}
             <Button onClick={handleCopy} disabled={!invitationUrl} className="w-full sm:w-auto">
               <Copy className="mr-2 h-4 w-4" />
               복사

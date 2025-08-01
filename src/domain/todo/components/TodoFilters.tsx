@@ -110,7 +110,6 @@ export function TodoFilters({ filterState, members, actions }: TodoFiltersProps)
           value={assigneeId?.toString() || "all"}
           onValueChange={(value) => onAssigneeChange(value === "all" ? null : Number(value))}
         >
-          {/* ... (Select 내부는 동일) */}
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>

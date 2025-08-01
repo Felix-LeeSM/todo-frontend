@@ -42,12 +42,7 @@ export function Header() {
               <span className="hidden md:inline">달력</span>
             </NavLink>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-              onClick={handleLogOut}
-            >
+            <Button variant="outline" size="sm" className="flex items-center gap-2" onClick={handleLogOut}>
               <LogOut className="h-5 w-5" />
               <span className="hidden md:inline">로그아웃</span>
             </Button>
