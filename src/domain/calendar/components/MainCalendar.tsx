@@ -1,3 +1,4 @@
+import { toDateString } from "@domain/todo/services/mapper";
 import type { TodoWithStarred } from "@domain/todo/types/Todo";
 import {
   eachDayOfInterval,
@@ -10,7 +11,8 @@ import {
   startOfWeek,
 } from "date-fns";
 import { AlertCircle, Star } from "lucide-react";
-import { useMemo } from "react";
+import { type KeyboardEvent, useMemo } from "react";
+import { ko } from "react-day-picker/locale";
 import { mergeClassNames } from "@/shared/mergeClassNames";
 
 interface MainCalendarProps {
@@ -28,11 +30,13 @@ export function MainCalendar({ selectedDate, selectedMonth, onSelectDate, todos,
     end: endOfWeek(endOfMonth(monthStart)),
   });
 
+  const weekdays = calendarDays.slice(0, 7).map((day) => format(day, "EEE", { locale: ko }));
+
   const todosByDate = useMemo(() => {
     return todos.reduce((acc, todo) => {
       if (!todo.dueDate) return acc;
 
-      const dateKey = format(todo.dueDate, "yyyy-MM-dd");
+      const dateKey = toDateString(todo.dueDate);
       const existingTodos = acc.get(dateKey);
 
       if (existingTodos) existingTodos.push(todo);
@@ -45,7 +49,7 @@ export function MainCalendar({ selectedDate, selectedMonth, onSelectDate, todos,
   return (
     <>
       <div className="grid grid-cols-7 text-center text-xs font-medium text-gray-500 lg:text-sm">
-        {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
+        {weekdays.map((day) => (
           <div key={day} className="p-1 lg:p-2">
             {day}
           </div>
@@ -53,31 +57,42 @@ export function MainCalendar({ selectedDate, selectedMonth, onSelectDate, todos,
       </div>
 
       <div className="grid grid-cols-7">
-        {calendarDays.map((day) => {
-          const dateKey = format(day, "yyyy-MM-dd");
-          const dayTodos = todosByDate.get(dateKey) || [];
+        {calendarDays
+          .map((day) => ({
+            day,
+            dateKey: toDateString(day),
+            dayTodos: todosByDate.get(toDateString(day)) || [],
 
-          const isCurrentMonth = isSameMonth(day, selectedMonth);
-          const isSelected = isSameDay(day, selectedDate);
-          const isToday = isSameDay(day, now);
+            isCurrentMonth: isSameMonth(day, selectedMonth),
+            isSelected: isSameDay(day, selectedDate),
+            isToday: isSameDay(day, now),
 
-          return (
-            <button
-              type="button"
+            handleKeyDown: (e: KeyboardEvent) => {
+              if (isSameMonth(day, selectedMonth) && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                onSelectDate(day);
+              }
+            },
+          }))
+          .map(({ day, dateKey, dayTodos, isCurrentMonth, isSelected, isToday, handleKeyDown }) => (
+            <div
               key={dateKey}
-              onClick={() => onSelectDate(day)}
-              disabled={!isCurrentMonth}
+              onClick={() => isCurrentMonth && onSelectDate(day)}
+              onKeyDown={handleKeyDown}
+              role="button"
+              tabIndex={isCurrentMonth ? 0 : -1}
+              aria-disabled={!isCurrentMonth}
               aria-label={`${format(day, "M월 d일")}, ${dayTodos.length}개의 할 일`}
               className={mergeClassNames(
                 "min-h-20 rounded-lg border p-1 text-left lg:min-h-25 lg:p-2 flex flex-col justify-start",
-                "transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2",
-
                 {
                   "border-blue-400": isToday,
                   "border-gray-200": !isToday,
                   "bg-blue-50 border-blue-200": isSelected,
                   "hover:bg-gray-50": !isSelected && isCurrentMonth,
-                  "opacity-50 cursor-not-allowed": !isCurrentMonth,
+                  "opacity-50": !isCurrentMonth,
+                  "transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:relative focus:z-10":
+                    isCurrentMonth,
                 },
               )}
             >
@@ -90,7 +105,7 @@ export function MainCalendar({ selectedDate, selectedMonth, onSelectDate, todos,
                 {format(day, "d")}
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 cursor-default">
                 {dayTodos.slice(0, 2).map((todo) => (
                   <div key={todo.id} className="flex items-center space-x-1 rounded border bg-white p-1 text-xs">
                     <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-400 lg:h-2 lg:w-2" />
@@ -105,9 +120,8 @@ export function MainCalendar({ selectedDate, selectedMonth, onSelectDate, todos,
                 ))}
                 {dayTodos.length > 2 && <div className="text-center text-xs text-gray-500">+{dayTodos.length - 2}</div>}
               </div>
-            </button>
-          );
-        })}
+            </div>
+          ))}
       </div>
     </>
   );

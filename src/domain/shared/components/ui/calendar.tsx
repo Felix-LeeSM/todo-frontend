@@ -2,6 +2,7 @@ import { Button, buttonVariants } from "@domain/shared/components/ui/button";
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { type DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
+import { ko } from "react-day-picker/locale";
 import { mergeClassNames } from "@/shared/mergeClassNames";
 
 function Calendar({
@@ -20,6 +21,7 @@ function Calendar({
 
   return (
     <DayPicker
+      locale={ko}
       showOutsideDays={showOutsideDays}
       className={mergeClassNames(
         "bg-background group/calendar p-3 m-0.5 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",

@@ -36,7 +36,7 @@ export const DueDateSelector = ({ dueDate, onSelect }: { dueDate?: Date | null; 
             aria-label={dueDate ? `선택된 날짜: ${format(dueDate, "yy년 M월 d일", { locale: ko })}` : "날짜 선택"}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {dueDate ? format(dueDate, "M월 d일") : <span>{"날짜 선택"}</span>}
+            {dueDate ? format(dueDate, "yy년 M월 d일") : <span>{"날짜 선택"}</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
