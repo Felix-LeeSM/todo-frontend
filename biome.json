@@ -20,7 +20,8 @@
       "recommended": true,
       "a11y": {
         "useKeyWithMouseEvents": "off",
-        "noDistractingElements": "off"
+        "noDistractingElements": "off",
+        "useSemanticElements": "warn"
       }
     }
   },
