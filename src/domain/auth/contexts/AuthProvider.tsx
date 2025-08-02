@@ -5,13 +5,22 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { toastErrorMessage } from "@/shared/toastErrorMessage";
+import type { SignInRequestDTO } from "../types/dto/auth.dto";
 
 export function AuthProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [user, setUser] = useState<User>();
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  const handleSignIn = (user: User) => setUser(user);
+  const handleSignIn = (data: SignInRequestDTO) => {
+    return authApi
+      .signIn(data)
+      .then((user) => {
+        setUser(user);
+      })
+      .catch(toastErrorMessage);
+  };
 
   const handleLogOut = () => {
     authApi.signOut().then((res) => {

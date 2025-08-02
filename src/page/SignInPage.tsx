@@ -1,24 +1,11 @@
-import { AuthContext } from "@domain/auth/contexts/AuthContext";
-import { SignInForm, type SignInFormData } from "@domain/auth/contexts/components/SignInForm";
-import { authApi } from "@domain/auth/services/authApi";
+import { SignInForm } from "@domain/auth/contexts/components/SignInForm";
+import { useAuthActions } from "@domain/auth/hooks/useAuthActions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@domain/shared/components/ui/card";
 import { CheckCircle } from "lucide-react";
-import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toastErrorMessage } from "@/shared/toastErrorMessage";
+import { Link } from "react-router-dom";
 
 export default function SignInPage() {
-  const { handleSignIn } = useContext(AuthContext);
-
-  const navigate = useNavigate();
-
-  const handleSubmit = (formData: SignInFormData) => {
-    return authApi
-      .signIn(formData)
-      .then((res) => handleSignIn(res))
-      .then(() => navigate("/groups"))
-      .catch(toastErrorMessage);
-  };
+  const { handleSignIn } = useAuthActions();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -37,7 +24,7 @@ export default function SignInPage() {
             <CardDescription>계정에 로그인하여 할일을 관리하세요</CardDescription>
           </CardHeader>
           <CardContent>
-            <SignInForm onSubmit={(formData) => handleSubmit(formData)} />
+            <SignInForm onSubmit={(formData) => handleSignIn(formData)} />
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">

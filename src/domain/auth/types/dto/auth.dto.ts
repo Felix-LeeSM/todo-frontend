@@ -1,13 +1,13 @@
 export interface SignUpRequestDTO {
   username: string;
   nickname: string;
-  password?: string;
-  confirmPassword?: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface SignInRequestDTO {
   username: string;
-  password?: string;
+  password: string;
 }
 
 export interface UserResponseDTO {

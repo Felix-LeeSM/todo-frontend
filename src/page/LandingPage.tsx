@@ -1,20 +1,15 @@
-import { AuthContext } from "@domain/auth/contexts/AuthContext";
-import { authApi } from "@domain/auth/services/authApi";
+import { useAuthActions } from "@domain/auth/hooks/useAuthActions";
 import { Button } from "@domain/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@domain/shared/components/ui/card";
 import { ArrowRight, Calendar, CheckCircle, Star, Users } from "lucide-react";
-import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { handleSignIn, handleLogOut, user } = useContext(AuthContext);
+  const { handleSignIn, handleLogOut, user } = useAuthActions();
 
   const showDemo = () => {
-    authApi.signIn({ username: "felix", password: "1q2w3e4r!!" }).then((user) => {
-      handleSignIn(user);
-      navigate("/groups");
-    });
+    handleSignIn({ username: "felix", password: "1q2w3e4r!!" });
   };
 
   const onSignOut = () => {

@@ -2,16 +2,18 @@ import { SignUpForm, type SignUpFormData } from "@domain/auth/contexts/component
 import { authApi } from "@domain/auth/services/authApi";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@domain/shared/components/ui/card";
 import { CheckCircle } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from;
 
   const handleSubmit = async (formData: SignUpFormData) => {
     return authApi
       .signUp(formData)
-      .then(() => navigate("/signin"))
+      .then(() => navigate("/signin", { state: { from } }))
       .catch(toastErrorMessage);
   };
 
@@ -37,7 +39,7 @@ export default function SignUpPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 이미 계정이 있으신가요?{" "}
-                <Link to="/signin" className="text-blue-600 hover:underline">
+                <Link to="/signin" className="text-blue-600 hover:underline" state={{ from }}>
                   로그인
                 </Link>
               </p>

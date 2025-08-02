@@ -8,6 +8,5 @@ export function GuestRoute() {
   if (user) {
     return <Navigate to="/groups" replace />;
   }
-
   return <Outlet />;
 }
