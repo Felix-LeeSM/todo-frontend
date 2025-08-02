@@ -8,7 +8,13 @@ import type {
   GroupResponseDTO,
   UpdateGroupRequestDTO,
 } from "@domain/group/types/dto/group.dto";
-import type { DetailedGroup, FullGroupDetails, Group, Invitation } from "@domain/group/types/Group";
+import type {
+  DetailedGroup,
+  FullGroupDetails,
+  Group,
+  GroupInvitationInfo,
+  Invitation,
+} from "@domain/group/types/Group";
 import axios from "axios";
 import type { UpdateMemberRequestDTO } from "../types/dto/member.dto";
 
@@ -49,7 +55,7 @@ export const groupApi = {
       .then((res) => toInvitaion(res.data));
   },
 
-  getInvitationInfo: (token: string): Promise<GroupInvitationInfoDTOResponse> => {
+  getInvitationInfo: (token: string): Promise<GroupInvitationInfo> => {
     return axios.get<GroupInvitationInfoDTOResponse>(`/api/v1/group/invitation/${token}`).then((res) => res.data);
   },
 

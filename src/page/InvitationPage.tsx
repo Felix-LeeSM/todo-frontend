@@ -6,10 +6,59 @@ import { Avatar, AvatarFallback, AvatarImage } from "@domain/shared/components/u
 import { Badge } from "@domain/shared/components/ui/badge";
 import { Button } from "@domain/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@domain/shared/components/ui/card";
-import { Calendar, CheckCircle, Crown, Loader2, Shield, User, Users } from "lucide-react";
+import { Calendar, CheckCircle, Crown, Loader2, LogIn, Shield, User, Users, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toastErrorMessage } from "@/shared/toastErrorMessage";
+
+const ActionRenderer = ({
+  groupInfo,
+  isJoining,
+  handleJoinGroup,
+}: {
+  groupInfo: GroupInvitationInfo;
+  isJoining: boolean;
+  handleJoinGroup: () => void;
+}) => {
+  if (groupInfo.isMember) {
+    return (
+      <Button asChild className="w-full">
+        <Link to={`/groups/${groupInfo.groupId}`}>
+          <LogIn className="mr-2 h-4 w-4" />
+          그룹으로 바로가기
+        </Link>
+      </Button>
+    );
+  }
+  if (groupInfo.isExpired) {
+    return (
+      <>
+        <div className="text-center text-sm text-red-600 bg-red-50 p-3 rounded-md border border-red-200">
+          이 초대 링크는 만료되었습니다.
+        </div>
+        <Button className="w-full" disabled>
+          <XCircle className="mr-2 h-4 w-4" />
+          참여 불가 (만료됨)
+        </Button>
+      </>
+    );
+  }
+  return (
+    <Button onClick={handleJoinGroup} className="w-full" disabled={isJoining}>
+      {isJoining ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          그룹에 참여하는 중...
+        </>
+      ) : (
+        <>
+          <Users className="mr-2 h-4 w-4" />
+          그룹에 참여하기
+        </>
+      )}
+    </Button>
+  );
+};
 
 export default function InvitationPage() {
   const { token = "" } = useParams<{ token: string }>();
@@ -29,6 +78,7 @@ export default function InvitationPage() {
         setGroupInfo(info);
       })
       .catch((e) => {
+        // API가 410 Gone 등 에러를 반환하면 여기서 처리됩니다.
         toastErrorMessage(e);
         setError(e?.message || "알 수 없는 오류가 발생했습니다.");
       })
@@ -46,7 +96,6 @@ export default function InvitationPage() {
       })
       .catch((e) => {
         toastErrorMessage(e);
-        setError(e);
       })
       .finally(() => setIsJoining(false));
   };
@@ -225,24 +274,9 @@ export default function InvitationPage() {
                 )}
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <Button onClick={handleJoinGroup} className="w-full" disabled={isJoining}>
-                {isJoining ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    그룹에 참여하는 중...
-                  </>
-                ) : (
-                  <>
-                    <Users className="mr-2 h-4 w-4" />
-                    그룹에 참여하기
-                  </>
-                )}
-              </Button>
-
-              <div className="flex flex-col sm:flex-row gap-2">
+            <div className="space-y-3 pt-4">
+              <ActionRenderer groupInfo={groupInfo} isJoining={isJoining} handleJoinGroup={handleJoinGroup} />
+              <div className="flex justify-end flex-col sm:flex-row gap-2">
                 <Button variant="outline" asChild className="w-full sm:w-auto bg-transparent">
                   <Link to="/groups">내 그룹 보기</Link>
                 </Button>

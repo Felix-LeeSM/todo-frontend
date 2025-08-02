@@ -15,7 +15,7 @@ const LandingPage = React.lazy(() => import("@/page/LandingPage"));
 const SignInPage = React.lazy(() => import("@/page/SignInPage"));
 const SignUpPage = React.lazy(() => import("@/page/SignUpPage"));
 const GroupsPage = React.lazy(() => import("@/page/GroupsPage"));
-const CalandarPage = React.lazy(() => import("@/page/CalendarPage"));
+const CalendarPage = React.lazy(() => import("@/page/CalendarPage"));
 const InvitePage = React.lazy(() => import("./page/InvitationPage"));
 const GroupTodoPage = React.lazy(() => import("./page/GroupTodoPage"));
 const GroupSettingsPage = React.lazy(() => import("./page/GroupSettingsPage"));
@@ -36,7 +36,7 @@ function App() {
           <Route element={<UserRoute />}>
             <Route element={<Layout />}>
               <Route path="/groups" element={<GroupsPage />} />
-              <Route path="/calendar" element={<CalandarPage />} />
+              <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/groups/invitation/:token" element={<InvitePage />} />
             </Route>
             <Route path="/groups/:groupId" element={<GroupProvider onNotFound={() => navigate("/groups")} />}>

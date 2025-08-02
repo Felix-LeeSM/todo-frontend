@@ -35,6 +35,8 @@ export interface GroupInvitationInfo {
   todoCount: number;
   completedTodoCount: number;
   memberCount: number;
+  isMember: boolean;
+  isExpired: boolean;
   issuer: Member;
   members: Member[];
   expiresAt: string;

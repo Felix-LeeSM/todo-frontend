@@ -51,6 +51,8 @@ export interface GroupInvitationInfoDTOResponse {
   todoCount: number;
   completedTodoCount: number;
   memberCount: number;
+  isMember: boolean;
+  isExpired: boolean;
   issuer: MemberDTO;
   members: MemberDTO[];
   expiresAt: string;
